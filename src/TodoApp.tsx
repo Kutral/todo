@@ -14,6 +14,8 @@ function TodoApp() {
     const [newTask, setNewTask] = useState('');
     const [priority, setPriority] = useState<'normal' | 'medium' | 'urgent'>('normal');
     const [recurring, setRecurring] = useState(false);
+    const [category, setCategory] = useState('');
+    const [showCategoryInput, setShowCategoryInput] = useState(false);
 
     const handleAddTask = (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,10 +23,12 @@ function TodoApp() {
 
         // If adding from tomorrow tab, add to tomorrow, else today
         const type = activeTab === 'tomorrow' ? 'tomorrow' : 'today';
-        addTask(newTask, type, priority, recurring);
+        addTask(newTask, type, priority, recurring, category.trim() || undefined);
         setNewTask('');
         setPriority('normal');
         setRecurring(false);
+        setCategory('');
+        setShowCategoryInput(false);
     };
 
     const filteredTasks = tasks.filter(t => {
@@ -101,48 +105,67 @@ function TodoApp() {
                         </div>
                     </header>
 
-                    <form onSubmit={handleAddTask} className="flex gap-2 mb-4 md:mb-8">
-                        <div className="relative flex-1">
-                            <Input
-                                value={newTask}
-                                onChange={(e) => setNewTask(e.target.value)}
-                                placeholder={`Add task...`}
-                                className={`pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'border-neo-primary focus-visible:ring-neo-primary' :
-                                    priority === 'medium' ? 'border-neo-secondary focus-visible:ring-neo-secondary' :
+                    <form onSubmit={handleAddTask} className="flex flex-col gap-2 mb-4 md:mb-8">
+                        <div className="flex gap-2">
+                            <div className="relative flex-1">
+                                <Input
+                                    value={newTask}
+                                    onChange={(e) => setNewTask(e.target.value)}
+                                    placeholder={`Add task...`}
+                                    className={`pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'border-neo-primary focus-visible:ring-neo-primary' :
+                                        priority === 'medium' ? 'border-neo-secondary focus-visible:ring-neo-secondary' :
+                                            ''
+                                        }`}
+                                />
+                                <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCategoryInput(!showCategoryInput)}
+                                        className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${category ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
+                                        title="Add Category"
+                                    >
+                                        #
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setRecurring(!recurring)}
+                                        className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
+                                        title="Recurring Task"
+                                    >
+                                        ↻
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setPriority(priority === 'urgent' ? 'normal' : priority === 'medium' ? 'urgent' : 'medium')}
+                                        className={`w-8 h-8 md:w-auto md:h-auto md:px-2 md:py-1 text-xs font-bold uppercase border-2 border-neo-dark transition-all flex items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
+                                            priority === 'medium' ? 'bg-neo-secondary text-neo-dark' :
+                                                'bg-neo-gray text-neo-dark/50'
+                                            }`}
+                                    >
+                                        {priority === 'normal' ? 'N' : priority === 'urgent' ? 'U' : 'M'}
+                                    </button>
+                                </div>
+                            </div>
+                            <Button
+                                type="submit"
+                                size="lg"
+                                className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
+                                    priority === 'medium' ? 'bg-neo-secondary text-neo-dark hover:bg-neo-secondary/90' :
                                         ''
                                     }`}
-                            />
-                            <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                                <button
-                                    type="button"
-                                    onClick={() => setRecurring(!recurring)}
-                                    className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
-                                    title="Recurring Task"
-                                >
-                                    ↻
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setPriority(priority === 'urgent' ? 'normal' : priority === 'medium' ? 'urgent' : 'medium')}
-                                    className={`w-16 h-8 md:w-auto md:h-auto px-1 md:px-2 py-0.5 md:py-1 text-xs md:text-xs font-bold uppercase border-2 border-neo-dark transition-all flex items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
-                                        priority === 'medium' ? 'bg-neo-secondary text-neo-dark' :
-                                            'bg-neo-gray text-neo-dark/50'
-                                        }`}
-                                >
-                                    {priority}
-                                </button>
-                            </div>
+                            >
+                                <Plus size={24} strokeWidth={3} className="md:w-6 md:h-6" />
+                            </Button>
                         </div>
-                        <Button
-                            type="submit"
-                            size="lg"
-                            className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
-                                priority === 'medium' ? 'bg-neo-secondary text-neo-dark hover:bg-neo-secondary/90' :
-                                    ''
-                                }`}
-                        >
-                            <Plus size={24} strokeWidth={3} className="md:w-6 md:h-6" />
-                        </Button>
+                        {showCategoryInput && (
+                            <Input
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                                placeholder="Category name (e.g. Work, Gym)..."
+                                className="h-10 text-sm border-2 border-neo-dark bg-neo-white"
+                                autoFocus
+                            />
+                        )}
                     </form>
 
                     <TaskList tasks={filteredTasks} />

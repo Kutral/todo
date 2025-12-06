@@ -14,6 +14,7 @@ export interface Task {
     recurring: boolean;
     type: TaskType;
     date: string; // ISO date string
+    category?: string;
     completedAt?: string; // ISO date string
     createdAt: number;
 }
@@ -21,7 +22,7 @@ export interface Task {
 interface TodoContextType {
     tasks: Task[];
     history: Task[];
-    addTask: (text: string, type: TaskType, priority: Priority, recurring: boolean) => void;
+    addTask: (text: string, type: TaskType, priority: Priority, recurring: boolean, category?: string) => void;
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
     updateTask: (id: string, text: string) => void;
@@ -84,7 +85,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('neo-stats', JSON.stringify(stats));
     }, [stats]);
 
-    const addTask = (text: string, type: TaskType, priority: Priority, recurring: boolean) => {
+    const addTask = (text: string, type: TaskType, priority: Priority, recurring: boolean, category?: string) => {
         const newTask: Task = {
             id: uuidv4(),
             text,
@@ -92,6 +93,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
             priority,
             recurring,
             type,
+            category,
             date: new Date().toISOString(),
             createdAt: Date.now(),
         };

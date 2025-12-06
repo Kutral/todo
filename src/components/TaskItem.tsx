@@ -32,6 +32,11 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
             </button>
 
             <div className="flex-1 min-w-0">
+                {task.category && (
+                    <span className="inline-block bg-neo-dark text-neo-white text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded-sm mr-2 mb-1 uppercase tracking-wider">
+                        #{task.category}
+                    </span>
+                )}
                 <span className={cn(
                     "font-bold text-base md:text-lg block break-all",
                     task.completed && "line-through text-gray-400"
