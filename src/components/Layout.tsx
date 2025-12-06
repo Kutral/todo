@@ -3,6 +3,7 @@ import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
 import { LayoutDashboard, Calendar, History, Sprout } from "lucide-react";
 import { cn } from "../lib/utils";
+import { useSwipeable } from "react-swipeable";
 
 interface LayoutProps {
     children: ReactNode;
@@ -11,6 +12,24 @@ interface LayoutProps {
 }
 
 export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
+    const TABS: ('today' | 'tomorrow' | 'garden' | 'history')[] = ['today', 'tomorrow', 'garden', 'history'];
+
+    const handlers = useSwipeable({
+        onSwipedLeft: () => {
+            const currentIndex = TABS.indexOf(activeTab);
+            if (currentIndex < TABS.length - 1) {
+                onTabChange(TABS[currentIndex + 1]);
+            }
+        },
+        onSwipedRight: () => {
+            const currentIndex = TABS.indexOf(activeTab);
+            if (currentIndex > 0) {
+                onTabChange(TABS[currentIndex - 1]);
+            }
+        },
+        trackMouse: false
+    });
+
     return (
         <div className="min-h-screen bg-neo-bg flex flex-col font-sans selection:bg-neo-primary selection:text-neo-dark">
             <QuoteWidget />
@@ -60,7 +79,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8">
+                <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8" {...handlers}>
                     <div className="max-w-4xl mx-auto min-h-[calc(100vh-8rem)] flex flex-col">
                         <div className="flex-1">
                             {children}
