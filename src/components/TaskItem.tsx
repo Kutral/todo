@@ -45,58 +45,59 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                 )}
             </div>
 
-            <div className="flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
+            <div className="flex gap-1 md:gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0 items-center">
                 <Button
                     size="sm"
                     variant={task.priority === 'urgent' ? 'default' : 'outline'}
-                    className={cn("h-8 px-2 text-xs uppercase",
+                    className={cn("h-6 w-6 md:h-8 md:w-auto p-0 md:px-2 text-[10px] md:text-xs uppercase flex items-center justify-center",
                         task.priority === 'urgent' ? "bg-neo-primary" :
                             task.priority === 'medium' ? "bg-neo-secondary" : ""
                     )}
                     onClick={() => togglePriority(task.id)}
                 >
-                    {task.priority}
+                    <span className="md:hidden">{task.priority.charAt(0)}</span>
+                    <span className="hidden md:inline">{task.priority}</span>
                 </Button>
 
                 <Button
                     size="icon"
                     variant="ghost"
-                    className={cn("h-8 w-8", task.recurring && "text-neo-secondary")}
+                    className={cn("h-6 w-6 md:h-8 md:w-8", task.recurring && "text-neo-secondary")}
                     onClick={() => toggleRecurring(task.id)}
                     title="Toggle Recurring"
                 >
-                    <span className="text-lg">↻</span>
+                    <span className="text-sm md:text-lg">↻</span>
                 </Button>
 
                 {task.type === 'today' ? (
                     <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8"
+                        className="h-6 w-6 md:h-8 md:w-8"
                         onClick={() => moveTaskToType(task.id, 'tomorrow')}
                         title="Move to Tomorrow"
                     >
-                        <ArrowRight size={18} />
+                        <ArrowRight size={14} className="md:w-[18px]" />
                     </Button>
                 ) : (
                     <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8"
+                        className="h-6 w-6 md:h-8 md:w-8"
                         onClick={() => moveTaskToType(task.id, 'today')}
                         title="Move to Today"
                     >
-                        <Calendar size={18} />
+                        <Calendar size={14} className="md:w-[18px]" />
                     </Button>
                 )}
 
                 <Button
                     size="icon"
                     variant="ghost"
-                    className="h-8 w-8 hover:bg-neo-primary hover:text-white"
+                    className="h-6 w-6 md:h-8 md:w-8 hover:bg-neo-primary hover:text-white"
                     onClick={() => deleteTask(task.id)}
                 >
-                    <Trash2 size={18} />
+                    <Trash2 size={14} className="md:w-[18px]" />
                 </Button>
             </div>
         </motion.div>
