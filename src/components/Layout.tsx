@@ -1,9 +1,10 @@
-import { type ReactNode } from "react";
+import { type ReactNode, useState, useEffect } from "react";
 import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
 import { LayoutDashboard, Calendar, History, Sprout } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useSwipeable } from "react-swipeable";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface LayoutProps {
     children: ReactNode;
@@ -11,8 +12,34 @@ interface LayoutProps {
     onTabChange: (tab: 'today' | 'tomorrow' | 'history' | 'garden') => void;
 }
 
+const slideVariants = {
+    enter: (direction: number) => ({
+        x: direction > 0 ? 300 : -300,
+        opacity: 0
+    }),
+    center: {
+        zIndex: 1,
+        x: 0,
+        opacity: 1
+    },
+    exit: (direction: number) => ({
+        zIndex: 0,
+        x: direction < 0 ? 300 : -300,
+        opacity: 0
+    })
+};
+
 export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
     const TABS: ('today' | 'tomorrow' | 'garden' | 'history')[] = ['today', 'tomorrow', 'garden', 'history'];
+    const [direction, setDirection] = useState(0);
+    const [prevTab, setPrevTab] = useState(activeTab);
+
+    useEffect(() => {
+        const prevIndex = TABS.indexOf(prevTab);
+        const currIndex = TABS.indexOf(activeTab);
+        setDirection(currIndex > prevIndex ? 1 : -1);
+        setPrevTab(activeTab);
+    }, [activeTab]);
 
     const handlers = useSwipeable({
         onSwipedLeft: () => {
@@ -74,7 +101,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                 Est. {new Date().getFullYear()}
                             </p>
                             <p className="font-black text-sm text-neo-dark uppercase tracking-tight">
-                                Developed by Kutral
+                                Developed by Kutral Eswar
                             </p>
                         </div>
                     </div>
@@ -83,17 +110,33 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8" {...handlers}>
+                <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8 overflow-x-hidden" {...handlers}>
                     <div className="max-w-4xl mx-auto min-h-[calc(100vh-8rem)] flex flex-col">
-                        <div className="flex-1">
-                            {children}
+                        <div className="flex-1 relative">
+                            <AnimatePresence mode="wait" custom={direction}>
+                                <motion.div
+                                    key={activeTab}
+                                    custom={direction}
+                                    variants={slideVariants}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    transition={{
+                                        x: { type: "spring", stiffness: 300, damping: 30 },
+                                        opacity: { duration: 0.2 }
+                                    }}
+                                    className="h-full"
+                                >
+                                    {children}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                         <div className="md:hidden py-8 text-center opacity-50 hover:opacity-100 transition-opacity">
                             <p className="font-bold text-[10px] uppercase tracking-widest mb-1">
                                 © {new Date().getFullYear()} NeoTodo
                             </p>
                             <p className="font-black text-xs uppercase tracking-tight text-neo-dark">
-                                Developed by Kutral
+                                Developed by Kutral Eswar
                             </p>
                         </div>
                     </div>
