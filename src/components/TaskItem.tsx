@@ -31,9 +31,9 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                 {task.completed && <Check size={16} strokeWidth={4} />}
             </button>
 
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
                 <span className={cn(
-                    "font-bold text-base md:text-lg block",
+                    "font-bold text-base md:text-lg block break-all",
                     task.completed && "line-through text-gray-400"
                 )}>
                     {task.text}
@@ -45,7 +45,7 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                 )}
             </div>
 
-            <div className="flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
                 <Button
                     size="sm"
                     variant={task.priority === 'urgent' ? 'default' : 'outline'}
