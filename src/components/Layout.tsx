@@ -68,11 +68,15 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                         />
                     </nav>
 
-                    <div className="mt-auto pt-4 border-t-3 border-neo-dark">
-                        <p className="font-bold text-sm text-neo-dark/70 uppercase">
-                            Developed by<br />
-                            <span className="text-neo-dark text-base">Kutral</span>
-                        </p>
+                    <div className="mt-auto pt-6 border-t-3 border-neo-dark">
+                        <div className="flex flex-col gap-1">
+                            <p className="font-bold text-xs text-neo-dark/60 uppercase tracking-widest">
+                                Est. {new Date().getFullYear()}
+                            </p>
+                            <p className="font-black text-sm text-neo-dark uppercase tracking-tight">
+                                Developed by Kutral
+                            </p>
+                        </div>
                     </div>
 
 
@@ -84,8 +88,11 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                         <div className="flex-1">
                             {children}
                         </div>
-                        <div className="md:hidden py-8 text-center opacity-50">
-                            <p className="font-bold text-xs uppercase">
+                        <div className="md:hidden py-8 text-center opacity-50 hover:opacity-100 transition-opacity">
+                            <p className="font-bold text-[10px] uppercase tracking-widest mb-1">
+                                © {new Date().getFullYear()} NeoTodo
+                            </p>
+                            <p className="font-black text-xs uppercase tracking-tight text-neo-dark">
                                 Developed by Kutral
                             </p>
                         </div>
