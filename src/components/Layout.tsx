@@ -1,10 +1,9 @@
-import { type ReactNode, useState, useEffect } from "react";
+import { type ReactNode } from "react";
 import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
 import { LayoutDashboard, Calendar, History, Sprout } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useSwipeable } from "react-swipeable";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface LayoutProps {
     children: ReactNode;
@@ -12,34 +11,8 @@ interface LayoutProps {
     onTabChange: (tab: 'today' | 'tomorrow' | 'history' | 'garden') => void;
 }
 
-const slideVariants = {
-    enter: (direction: number) => ({
-        x: direction > 0 ? 300 : -300,
-        opacity: 0
-    }),
-    center: {
-        zIndex: 1,
-        x: 0,
-        opacity: 1
-    },
-    exit: (direction: number) => ({
-        zIndex: 0,
-        x: direction < 0 ? 300 : -300,
-        opacity: 0
-    })
-};
-
 export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
     const TABS: ('today' | 'tomorrow' | 'garden' | 'history')[] = ['today', 'tomorrow', 'garden', 'history'];
-    const [direction, setDirection] = useState(0);
-    const [prevTab, setPrevTab] = useState(activeTab);
-
-    useEffect(() => {
-        const prevIndex = TABS.indexOf(prevTab);
-        const currIndex = TABS.indexOf(activeTab);
-        setDirection(currIndex > prevIndex ? 1 : -1);
-        setPrevTab(activeTab);
-    }, [activeTab]);
 
     const handlers = useSwipeable({
         onSwipedLeft: () => {
