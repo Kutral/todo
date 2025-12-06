@@ -102,7 +102,10 @@ function TodoApp() {
                                 value={newTask}
                                 onChange={(e) => setNewTask(e.target.value)}
                                 placeholder={`Add task...`}
-                                className="pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3"
+                                className={`pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'border-neo-primary focus-visible:ring-neo-primary' :
+                                        priority === 'medium' ? 'border-neo-secondary focus-visible:ring-neo-secondary' :
+                                            ''
+                                    }`}
                             />
                             <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
                                 <button
@@ -125,7 +128,14 @@ function TodoApp() {
                                 </button>
                             </div>
                         </div>
-                        <Button type="submit" size="lg" className="h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3">
+                        <Button
+                            type="submit"
+                            size="lg"
+                            className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
+                                    priority === 'medium' ? 'bg-neo-secondary text-neo-dark hover:bg-neo-secondary/90' :
+                                        ''
+                                }`}
+                        >
                             <Plus size={24} strokeWidth={3} className="md:w-6 md:h-6" />
                         </Button>
                     </form>
