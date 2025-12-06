@@ -113,23 +113,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                 <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8 overflow-x-hidden" {...handlers}>
                     <div className="max-w-4xl mx-auto min-h-[calc(100vh-8rem)] flex flex-col">
                         <div className="flex-1 relative">
-                            <AnimatePresence mode="wait" custom={direction}>
-                                <motion.div
-                                    key={activeTab}
-                                    custom={direction}
-                                    variants={slideVariants}
-                                    initial="enter"
-                                    animate="center"
-                                    exit="exit"
-                                    transition={{
-                                        x: { type: "spring", stiffness: 300, damping: 30 },
-                                        opacity: { duration: 0.2 }
-                                    }}
-                                    className="h-full"
-                                >
-                                    {children}
-                                </motion.div>
-                            </AnimatePresence>
+                            {children}
                         </div>
                         <div className="md:hidden py-8 text-center opacity-50 hover:opacity-100 transition-opacity">
                             <p className="font-bold text-[10px] uppercase tracking-widest mb-1">
