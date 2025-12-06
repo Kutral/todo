@@ -49,13 +49,27 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                         />
                     </nav>
 
+                    <div className="mt-auto pt-4 border-t-3 border-neo-dark">
+                        <p className="font-bold text-sm text-neo-dark/70 uppercase">
+                            Developed by<br />
+                            <span className="text-neo-dark text-base">Kutral</span>
+                        </p>
+                    </div>
+
 
                 </aside>
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8">
-                    <div className="max-w-4xl mx-auto">
-                        {children}
+                    <div className="max-w-4xl mx-auto min-h-[calc(100vh-8rem)] flex flex-col">
+                        <div className="flex-1">
+                            {children}
+                        </div>
+                        <div className="md:hidden py-8 text-center opacity-50">
+                            <p className="font-bold text-xs uppercase">
+                                Developed by Kutral
+                            </p>
+                        </div>
                     </div>
                 </main>
             </div>
