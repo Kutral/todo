@@ -102,13 +102,13 @@ function TodoApp() {
                                 value={newTask}
                                 onChange={(e) => setNewTask(e.target.value)}
                                 placeholder={`Add task...`}
-                                className="pr-20 md:pr-24 text-base md:text-lg h-10 md:h-14 border-2 md:border-3"
+                                className="pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3"
                             />
                             <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
                                 <button
                                     type="button"
                                     onClick={() => setRecurring(!recurring)}
-                                    className={`w-5 h-5 md:w-6 md:h-6 flex items-center justify-center text-[10px] md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
+                                    className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
                                     title="Recurring Task"
                                 >
                                     ↻
@@ -116,17 +116,17 @@ function TodoApp() {
                                 <button
                                     type="button"
                                     onClick={() => setPriority(priority === 'urgent' ? 'normal' : priority === 'medium' ? 'urgent' : 'medium')}
-                                    className={`px-1 md:px-2 py-0.5 md:py-1 text-[10px] md:text-xs font-bold uppercase border-2 border-neo-dark transition-all ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
+                                    className={`w-16 h-8 md:w-auto md:h-auto px-1 md:px-2 py-0.5 md:py-1 text-xs md:text-xs font-bold uppercase border-2 border-neo-dark transition-all flex items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
                                         priority === 'medium' ? 'bg-neo-secondary text-neo-dark' :
                                             'bg-neo-gray text-neo-dark/50'
                                         }`}
                                 >
-                                    {priority.charAt(0)}
+                                    {priority}
                                 </button>
                             </div>
                         </div>
-                        <Button type="submit" size="lg" className="h-10 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3">
-                            <Plus size={20} strokeWidth={3} className="md:w-6 md:h-6" />
+                        <Button type="submit" size="lg" className="h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3">
+                            <Plus size={24} strokeWidth={3} className="md:w-6 md:h-6" />
                         </Button>
                     </form>
 
