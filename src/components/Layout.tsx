@@ -258,12 +258,6 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                         Show Ticker
                                     </button>
                                 )}
-                                <p className="font-bold text-[10px] uppercase tracking-widest mb-1">
-                                    © {new Date().getFullYear()} NeoTodo
-                                </p>
-                                <p className="font-black text-xs uppercase tracking-tight text-neo-dark">
-                                    Developed by Kutral Eswar
-                                </p>
                             </div>
                         </div>
 
