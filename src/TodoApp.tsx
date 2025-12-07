@@ -142,7 +142,6 @@ function TodoApp() {
                                 onChange={(e) => setNewTask(e.target.value)}
                                 placeholder="Folder Name..."
                                 className="h-12 border-3 text-lg"
-                                autoFocus
                             />
                             <Button type="submit" size="lg" className="h-12 border-3 px-6">
                                 <Plus size={24} />
