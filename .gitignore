@@ -31,3 +31,6 @@ dist-ssr
 .env.test
 .env.production
 .env.*
+
+# Local Scripts
+Start NeoTodo.bat
