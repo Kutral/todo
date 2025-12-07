@@ -30,31 +30,47 @@ export function DigitalGarden() {
 
     return (
         <div className="space-y-6">
-            <Card className="bg-neo-accent border-neo-dark">
-                <CardHeader>
-                    <CardTitle>Your Digital Garden</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center py-12">
+            {/* Hero Section */}
+            <div className="border-2 border-neo-dark rounded-lg shadow-sm overflow-hidden flex flex-col">
+                {/* Top: Title Bar */}
+                <div className="bg-[#FFF9C4] p-4 text-center border-b-2 border-neo-dark">
+                    <h2 className="text-2xl font-black uppercase tracking-tight">Your Digital Garden</h2>
+                    <p className="text-xs font-bold text-neo-dark/60 uppercase tracking-widest mt-1">A visual of your consistency</p>
+                </div>
+
+                {/* Middle: Stats & Plant */}
+                <div className="bg-[#FFFFF0] p-8 flex flex-col items-center justify-center border-b-2 border-neo-dark/10">
                     <motion.div
                         key={stats.streak}
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", bounce: 0.5 }}
-                        className="text-9xl mb-4"
+                        className="text-8xl md:text-9xl mb-6 drop-shadow-sm filter"
                     >
                         {getTreeStage(stats.streak)}
                     </motion.div>
 
-                    <div className="space-y-2">
-                        <h3 className="text-2xl font-bold">Current Streak: {stats.streak} Days</h3>
-                        <p className="text-lg font-medium">Total Tasks Completed: {stats.totalCompleted}</p>
+                    <div className="text-center space-y-1">
+                        <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
+                            Current Streak: <span className="text-green-600">{stats.streak} Days</span>
+                        </h3>
+                        <div className="flex items-center justify-center gap-2">
+                            <span className="h-1 w-1 rounded-full bg-neo-dark/30"></span>
+                            <p className="text-sm font-bold text-neo-dark/50 uppercase tracking-wider">
+                                Total Tasks Completed: {stats.totalCompleted}
+                            </p>
+                            <span className="h-1 w-1 rounded-full bg-neo-dark/30"></span>
+                        </div>
                     </div>
+                </div>
 
-                    <div className="mt-8 p-4 bg-neo-white border-3 border-neo-dark inline-block transform -rotate-1">
-                        <p className="font-bold">"Consistency waters your garden. Keep the streak alive!"</p>
+                {/* Bottom: Quote */}
+                <div className="bg-white p-4 text-center">
+                    <div className="inline-block px-4 py-2 bg-neo-bg/50 rounded-full border border-neo-dark/10 text-sm font-bold italic text-neo-dark/70">
+                        "Consistency waters your garden. Keep the streak alive!"
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
 
             {/* Streak Calendar */}
             <Card className="bg-neo-white border-neo-dark">
