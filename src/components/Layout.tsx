@@ -84,7 +84,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
 
                     <div className="mt-8">
                         <div className="flex items-center justify-between mb-2 px-2">
-                            <h3 className="text-xs font-black uppercase tracking-widest text-neo-dark/50">Folders</h3>
+                            <h3 className="text-xs font-black uppercase tracking-widest text-neo-dark/50">Stacks</h3>
                             <button onClick={() => setIsAddingFolder(!isAddingFolder)} className="text-neo-dark hover:bg-neo-secondary rounded p-1">
                                 <Plus size={16} strokeWidth={3} />
                             </button>
@@ -111,20 +111,20 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                     <NavButton
                                         active={activeTab === folder}
                                         onClick={() => onTabChange(folder)}
-                                        icon={<Folder size={18} />}
+                                        icon={<Layers size={18} />}
                                         label={folder}
                                     />
                                     <button
                                         onClick={(e) => { e.stopPropagation(); deleteFolder(folder); }}
                                         className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-600 transition-opacity"
-                                        title="Delete Folder"
+                                        title="Delete Stack"
                                     >
                                         <X size={14} />
                                     </button>
                                 </div>
                             ))}
                             {folders.length === 0 && (
-                                <p className="text-xs text-neo-dark/40 italic px-2">No folders yet</p>
+                                <p className="text-xs text-neo-dark/40 italic px-2">No stacks yet</p>
                             )}
                         </nav>
                     </div>
@@ -194,8 +194,8 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                 <NavButton
                     active={folders.includes(activeTab) || activeTab === 'folders-manage'}
                     onClick={() => onTabChange('folders-manage')}
-                    icon={<Folder size={24} />}
-                    label="Folders"
+                    icon={<Layers size={24} />}
+                    label="Stacks"
                     mobile
                 />
             </nav>

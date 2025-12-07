@@ -1,16 +1,43 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Check, Trash2, ArrowRight, Calendar } from "lucide-react";
 import { useTodo, type Task } from "../context/TodoContext";
 import { Button } from "./ui/Button";
 import { cn } from "../lib/utils";
+import confetti from 'canvas-confetti';
+import { useState } from "react";
 
 interface TaskItemProps {
     task: Task;
     showDate?: boolean;
 }
 
+const GRATIFYING_MESSAGES = [
+    "Nice!", "Done!", "Crushed it!", "Boom!", "Next!", "Easy!", "On fire!", "Smoooooth"
+];
+
 export function TaskItem({ task, showDate }: TaskItemProps) {
     const { toggleTask, deleteTask, togglePriority, toggleRecurring, moveTaskToType } = useTodo();
+    const [showGratification, setShowGratification] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const handleToggle = (id: string) => {
+        if (!task.completed) {
+            // Trigger confetti
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#000000', '#FFDE00', '#FFFFFF'], // Neo-brutalist colors
+                disableForReducedMotion: true
+            });
+
+            // Show random message
+            setMessage(GRATIFYING_MESSAGES[Math.floor(Math.random() * GRATIFYING_MESSAGES.length)]);
+            setShowGratification(true);
+            setTimeout(() => setShowGratification(false), 2000);
+        }
+        toggleTask(id);
+    };
 
     return (
         <motion.div
@@ -19,14 +46,30 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -100 }}
             className={cn(
-                "group flex items-center gap-2 md:gap-3 p-3 md:p-4 border-2 md:border-3 border-neo-dark bg-neo-white shadow-neo mb-2 md:mb-3 transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
+                "group flex items-center gap-2 md:gap-3 p-3 md:p-4 border-2 md:border-3 border-neo-dark bg-neo-white shadow-neo mb-2 md:mb-3 transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none relative overflow-hidden",
                 task.priority === 'urgent' && "border-neo-primary bg-neo-primary/10",
                 task.priority === 'medium' && "border-neo-secondary bg-neo-secondary/10"
             )}
         >
+            <AnimatePresence>
+                {showGratification && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.5, y: -10 }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none"
+                    >
+                        <span className="font-black text-2xl uppercase italic bg-neo-primary text-neo-dark px-2 py-1 border-2 border-neo-dark shadow-neo rotate-[-5deg]">
+                            {message}
+                        </span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <button
-                onClick={() => toggleTask(task.id)}
+                onClick={() => handleToggle(task.id)}
                 className="h-6 w-6 border-3 border-neo-dark flex items-center justify-center hover:bg-neo-secondary transition-colors"
+                aria-label={task.completed ? "Mark as incomplete" : "Mark as complete"}
             >
                 {task.completed && <Check size={16} strokeWidth={4} />}
             </button>
@@ -38,8 +81,8 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                     </span>
                 )}
                 <span className={cn(
-                    "font-bold text-base md:text-lg block break-all",
-                    task.completed && "line-through text-gray-400"
+                    "font-bold text-base md:text-lg block break-all transition-all duration-300",
+                    task.completed && "line-through text-gray-400 blur-[0.5px]"
                 )}>
                     {task.text}
                 </span>

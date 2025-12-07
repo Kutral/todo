@@ -6,7 +6,7 @@ import { DigitalGarden } from './components/DigitalGarden';
 import { useTodo, type Task } from './context/TodoContext';
 import { Input } from './components/ui/Input';
 import { Button } from './components/ui/Button';
-import { Plus, Trash2, Layers } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 function TodoApp() {
     const [activeTab, setActiveTab] = useState('today');
@@ -99,7 +99,6 @@ function TodoApp() {
     // For momentum, we ideally want "Total Tasks for Today including completed"
     // But since `tasks` state only holds incomplete tasks, we sum filteredTasks + completedToday
     const totalTasksForView = filteredTasks.length + completedToday;
-    const progressPercent = totalTasksForView === 0 ? 0 : Math.round((completedToday / totalTasksForView) * 100);
 
     // Generate progress blocks: 5 blocks total
     // 0-20% = 1 block, 21-40% = 2 blocks, etc.
