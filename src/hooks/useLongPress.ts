@@ -7,21 +7,15 @@ export function useLongPress(
 ) {
     const [longPressTriggered, setLongPressTriggered] = useState(false);
     const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const target = useRef<HTMLElement | null>(null);
 
     const start = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
-            if (shouldPreventDefault && event.target) {
-                const t = event.target as HTMLElement;
-                // Add listener to prevent ghost clicks / context menu on end
-                // target.current = t; 
-            }
             timeout.current = setTimeout(() => {
                 onLongPress(event);
                 setLongPressTriggered(true);
             }, delay);
         },
-        [onLongPress, delay, shouldPreventDefault]
+        [onLongPress, delay]
     );
 
     const clear = useCallback(
@@ -34,7 +28,7 @@ export function useLongPress(
             }
             setLongPressTriggered(false);
         },
-        [shouldPreventDefault, onClick, longPressTriggered]
+        [onClick, longPressTriggered]
     );
 
     return {
@@ -45,8 +39,9 @@ export function useLongPress(
         onTouchEnd: (e: React.TouchEvent) => clear(e),
         onTouchMove: (e: React.TouchEvent) => clear(e, false), // Cancel on scroll/move
         onContextMenu: (e: React.MouseEvent | React.TouchEvent) => {
-            // Always prevent context menu on the button to allow long press
-            e.preventDefault();
+            if (shouldPreventDefault) {
+                e.preventDefault();
+            }
         }
     };
 }
