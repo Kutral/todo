@@ -6,7 +6,7 @@ import { DigitalGarden } from './components/DigitalGarden';
 import { useTodo, type Task } from './context/TodoContext';
 import { Input } from './components/ui/Input';
 import { Button } from './components/ui/Button';
-import { Plus, Trash2, Layers, Folder, RotateCw } from 'lucide-react';
+import { Plus, Trash2, Layers, Folder, RotateCw, SlidersHorizontal } from 'lucide-react';
 import { useLongPress } from './hooks/useLongPress';
 import { TaskOptionsModal } from './components/TaskOptionsModal';
 
@@ -251,11 +251,19 @@ function TodoApp() {
                                         }`}
                                 />
                                 <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowOptionsModal(true)}
+                                        className="w-8 h-8 md:hidden flex items-center justify-center text-sm font-bold border-2 border-neo-dark bg-neo-white text-neo-dark hover:bg-neo-secondary transition-all"
+                                        title="Options"
+                                    >
+                                        <SlidersHorizontal size={18} strokeWidth={2.5} />
+                                    </button>
                                     {!isFolderTab && folders.length > 0 && (
                                         <button
                                             type="button"
                                             onClick={() => setShowFolderSelect(!showFolderSelect)}
-                                            className={`w-8 h-8 md:w-auto md:h-8 md:px-2 flex items-center justify-center gap-1 text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
+                                            className={`hidden md:flex w-8 h-8 md:w-auto md:h-8 md:px-2 items-center justify-center gap-1 text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
                                             title="Select Stack"
                                         >
                                             <Folder size={16} strokeWidth={2.5} />
@@ -267,7 +275,7 @@ function TodoApp() {
                                     <button
                                         type="button"
                                         onClick={() => setRecurring(!recurring)}
-                                        className={`w-8 h-8 md:w-8 md:h-8 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
+                                        className={`hidden md:flex w-8 h-8 md:w-8 md:h-8 items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
                                         title="Recurring Task"
                                     >
                                         <RotateCw size={18} strokeWidth={2.5} className={recurring ? 'animate-spin-slow' : ''} />
@@ -275,7 +283,7 @@ function TodoApp() {
                                     <button
                                         type="button"
                                         onClick={() => setPriority(priority === 'urgent' ? 'normal' : priority === 'medium' ? 'urgent' : 'medium')}
-                                        className={`w-8 h-8 md:w-auto md:h-8 md:px-3 text-xs font-bold uppercase border-2 border-neo-dark transition-all flex items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
+                                        className={`hidden md:flex w-8 h-8 md:w-auto md:h-8 md:px-3 text-xs font-bold uppercase border-2 border-neo-dark transition-all items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
                                             priority === 'medium' ? 'bg-neo-secondary text-neo-dark' :
                                                 'bg-neo-gray text-neo-dark/50'
                                             }`}
