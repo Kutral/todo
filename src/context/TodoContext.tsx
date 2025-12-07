@@ -148,11 +148,13 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                 priority,
                 recurring,
                 type,
-                category: category || undefined,
+                category: category || null,
                 date: new Date().toISOString(),
                 createdAt: Date.now(),
             };
-            await setDoc(doc(db, 'users', user.uid, 'tasks', newTask.id), newTask);
+            // Ensure no undefined values are passed to Firestore
+            const taskToSave = JSON.parse(JSON.stringify(newTask));
+            await setDoc(doc(db, 'users', user.uid, 'tasks', newTask.id), taskToSave);
         } catch (err: any) {
             console.error('Add Task Error:', err);
             setError("Failed to add task: " + err.message);
