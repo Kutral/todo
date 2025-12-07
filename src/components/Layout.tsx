@@ -36,7 +36,9 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
         user,
         logout,
         loading,
-        error
+        error,
+        showQuotes,
+        toggleQuotes
     } = useTodo();
 
     const [isAddingFolder, setIsAddingFolder] = useState(false);
@@ -217,6 +219,16 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                 <LogOut size={16} />
                             </button>
                         </div>
+
+                        {!showQuotes && (
+                            <button
+                                onClick={() => toggleQuotes(true)}
+                                className="w-full text-[10px] font-bold uppercase text-neo-dark/60 hover:text-neo-primary mb-2 hover:underline"
+                            >
+                                Show Ticker
+                            </button>
+                        )}
+
                         <div className="text-[10px] uppercase font-bold text-neo-dark/40 tracking-widest text-center">
                             Developed by Kutral Eswar
                         </div>
@@ -235,7 +247,15 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                     {emptyMessage}
                                 </p>
                             </div>
-                            <div className="opacity-70 hover:opacity-100 mb-8">
+                            <div className="opacity-70 hover:opacity-100 mb-8 flex flex-col items-center">
+                                {!showQuotes && (
+                                    <button
+                                        onClick={() => toggleQuotes(true)}
+                                        className="text-[10px] font-bold uppercase text-neo-dark/60 hover:text-neo-primary mb-4 hover:underline"
+                                    >
+                                        Show Ticker
+                                    </button>
+                                )}
                                 <p className="font-bold text-[10px] uppercase tracking-widest mb-1">
                                     © {new Date().getFullYear()} NeoTodo
                                 </p>

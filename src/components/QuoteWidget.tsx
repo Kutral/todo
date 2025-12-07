@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useTodo } from "../context/TodoContext";
+import { NeoAlert } from "./NeoAlert";
 
 const QUOTES = [
     "Discipline is doing what needs to be done, even if you don't want to.",
@@ -32,55 +34,56 @@ const QUOTES = [
 ];
 
 export function QuoteWidget() {
+    const { showQuotes, toggleQuotes } = useTodo();
     const [randomQuotes, setRandomQuotes] = useState<string[]>([]);
-    const [isVisible, setIsVisible] = useState(true);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
-        // Check if user has hidden quotes
-        const isHidden = localStorage.getItem('neo_hide_quotes') === 'true';
-        if (isHidden) {
-            setIsVisible(false);
-            return;
-        }
         // Shuffle and pick a few quotes
         setRandomQuotes([...QUOTES].sort(() => 0.5 - Math.random()));
     }, []);
 
-    const handleHide = () => {
-        if (window.confirm("Turn off the motivational ticker?")) {
-            setIsVisible(false);
-            localStorage.setItem('neo_hide_quotes', 'true');
-        }
-    };
-
-    if (!isVisible) return null;
+    if (!showQuotes) return null;
 
     return (
-        <div
-            onClick={handleHide}
-            className="w-full overflow-hidden bg-neo-dark text-neo-accent border-y-2 md:border-y-3 border-neo-dark py-1 md:py-2 cursor-pointer hover:opacity-90 transition-opacity"
-            title="Click to hide"
-        >
-            <motion.div
-                className="flex whitespace-nowrap"
-                animate={{ x: [0, -1000] }}
-                transition={{
-                    repeat: Infinity,
-                    ease: "linear",
-                    duration: 60,
-                }}
+        <>
+            <div
+                onClick={() => setShowConfirm(true)}
+                className="w-full overflow-hidden bg-neo-dark text-neo-accent border-y-2 md:border-y-3 border-neo-dark py-1 md:py-2 cursor-pointer hover:opacity-90 transition-opacity"
+                title="Click to hide"
             >
-                {randomQuotes.map((quote, i) => (
-                    <span key={i} className="mx-4 md:mx-8 text-sm md:text-lg font-bold uppercase tracking-widest">
-                        {quote} ///
-                    </span>
-                ))}
-                {randomQuotes.map((quote, i) => (
-                    <span key={`dup-${i}`} className="mx-4 md:mx-8 text-sm md:text-lg font-bold uppercase tracking-widest">
-                        {quote} ///
-                    </span>
-                ))}
-            </motion.div>
-        </div>
+                <motion.div
+                    className="flex whitespace-nowrap"
+                    animate={{ x: [0, -1000] }}
+                    transition={{
+                        repeat: Infinity,
+                        ease: "linear",
+                        duration: 60,
+                    }}
+                >
+                    {randomQuotes.map((quote, i) => (
+                        <span key={i} className="mx-4 md:mx-8 text-sm md:text-lg font-bold uppercase tracking-widest">
+                            {quote} ///
+                        </span>
+                    ))}
+                    {randomQuotes.map((quote, i) => (
+                        <span key={`dup-${i}`} className="mx-4 md:mx-8 text-sm md:text-lg font-bold uppercase tracking-widest">
+                            {quote} ///
+                        </span>
+                    ))}
+                </motion.div>
+            </div>
+
+            <NeoAlert
+                isOpen={showConfirm}
+                title="Turn Off Ticker?"
+                message="Do you want to hide the motivational running text?"
+                onConfirm={() => {
+                    toggleQuotes(false);
+                    setShowConfirm(false);
+                }}
+                onCancel={() => setShowConfirm(false)}
+            />
+        </>
     );
 }

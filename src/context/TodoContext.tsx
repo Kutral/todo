@@ -43,6 +43,8 @@ interface TodoContextType {
         totalCompleted: number;
         lastActiveDate: string | null;
     };
+    showQuotes: boolean;
+    toggleQuotes: (show: boolean) => void;
 }
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
@@ -55,6 +57,14 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     const [history, setHistory] = useState<Task[]>([]);
     const [folders, setFolders] = useState<string[]>([]);
     const [stats, setStats] = useState({ streak: 0, totalCompleted: 0, lastActiveDate: null as string | null });
+    const [showQuotes, setShowQuotes] = useState(() => {
+        return localStorage.getItem('neo_show_quotes') !== 'false';
+    });
+
+    const toggleQuotes = (show: boolean) => {
+        setShowQuotes(show);
+        localStorage.setItem('neo_show_quotes', String(show));
+    };
 
     // 1. Auth Listener
     useEffect(() => {
@@ -271,7 +281,9 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
             moveTaskToType,
             addFolder,
             deleteFolder,
-            logout
+            logout,
+            showQuotes,
+            toggleQuotes
         }}>
             {children}
         </TodoContext.Provider>
