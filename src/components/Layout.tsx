@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from "react";
 import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
-import { LayoutDashboard, Calendar, History, Sprout, Folder, Plus, Trash2, X } from "lucide-react";
+import { LayoutDashboard, Calendar, History, Sprout, Folder, Plus, X } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useSwipeable } from "react-swipeable";
 import { useTodo } from "../context/TodoContext";
@@ -173,8 +173,8 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                 <NavButton
                     active={activeTab === 'tomorrow'}
                     onClick={() => onTabChange('tomorrow')}
-                    icon={<Calendar size={24} />}
-                    label="Tomorrow"
+                    icon={<Calendar size={28} />} // Slightly larger for tap target? Keep 24 for consistency
+                    label="Tmrw" // Shorten text
                     mobile
                 />
                 <NavButton
@@ -185,13 +185,15 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                     mobile
                 />
                 <NavButton
-                    active={folders.includes(activeTab) || activeTab === 'folders-view'}
-                    /* If active tab is a folder, OR we are in a folder view mode (implied), keep this active.
-                       Clicking this should probably cycle folders or open a menu?
-                       For now, let's just make it select the first folder if available. 
-                       Ideally we need a better mobile UI for multiple folders.
-                    */
-                    onClick={() => onTabChange(folders.length > 0 ? folders[0] : 'today')}
+                    active={activeTab === 'history'}
+                    onClick={() => onTabChange('history')}
+                    icon={<History size={24} />}
+                    label="History"
+                    mobile
+                />
+                <NavButton
+                    active={folders.includes(activeTab) || activeTab === 'folders-manage'}
+                    onClick={() => onTabChange('folders-manage')}
                     icon={<Folder size={24} />}
                     label="Folders"
                     mobile

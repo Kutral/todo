@@ -6,11 +6,11 @@ import { DigitalGarden } from './components/DigitalGarden';
 import { useTodo, type Task } from './context/TodoContext';
 import { Input } from './components/ui/Input';
 import { Button } from './components/ui/Button';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 function TodoApp() {
     const [activeTab, setActiveTab] = useState('today');
-    const { tasks, history, addTask, folders } = useTodo();
+    const { tasks, history, addTask, folders, addFolder, deleteFolder } = useTodo();
     const [newTask, setNewTask] = useState('');
     const [priority, setPriority] = useState<'normal' | 'medium' | 'urgent'>('normal');
     const [recurring, setRecurring] = useState(false);
@@ -20,6 +20,15 @@ function TodoApp() {
 
     const isFolderTab = folders.includes(activeTab);
 
+    // Dedicated handler for creating folders in the folders-manage view
+    const handleCreateFolder = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newTask.trim()) {
+            addFolder(newTask.trim());
+            setNewTask('');
+        }
+    };
+
     const handleAddTask = (e: React.FormEvent) => {
         e.preventDefault();
         if (!newTask.trim()) return;
@@ -27,8 +36,7 @@ function TodoApp() {
         // If in a folder tab, force that category
         const taskCategory = isFolderTab ? activeTab : selectedFolder || undefined;
 
-        // If adding from tomorrow tab, add to tomorrow. If in folder tab, default to today unless specified?
-        // Let's assume folder tasks are 'today' by default but categorized.
+        // If adding from tomorrow tab, add to tomorrow. If in folder tab, default to today unless specified.
         const type = activeTab === 'tomorrow' ? 'tomorrow' : 'today';
 
         addTask(newTask, type, priority, recurring, taskCategory);
@@ -100,6 +108,52 @@ function TodoApp() {
                                 <TaskList tasks={group.tasks} showDate={false} />
                             </div>
                         ))
+                    )}
+                </div>
+            ) : activeTab === 'folders-manage' ? (
+                <div className="space-y-6">
+                    <h2 className="text-4xl font-black uppercase mb-8">Folders</h2>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        {folders.map(folder => (
+                            <div key={folder} className="relative group">
+                                <button
+                                    onClick={() => setActiveTab(folder)}
+                                    className="w-full aspect-square bg-neo-white border-3 border-neo-dark p-4 flex flex-col items-center justify-center gap-2 hover:translate-x-1 hover:translate-y-1 transition-transform shadow-neo text-center max-w-full"
+                                >
+                                    <span className="font-black uppercase text-lg break-all line-clamp-2">{folder}</span>
+                                    <span className="text-xs font-bold text-neo-dark/50">{tasks.filter(t => t.category === folder).length} Tasks</span>
+                                </button>
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); deleteFolder(folder); }}
+                                    className="absolute top-2 right-2 p-2 bg-neo-white border-2 border-neo-dark rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-red-100 text-red-600"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-8 p-6 border-3 border-neo-dark bg-neo-white shadow-neo">
+                        <h3 className="font-black uppercase mb-4 text-xl">Create New Folder</h3>
+                        <form onSubmit={handleCreateFolder} className="flex gap-2">
+                            <Input
+                                value={newTask}
+                                onChange={(e) => setNewTask(e.target.value)}
+                                placeholder="Folder Name..."
+                                className="h-12 border-3 text-lg"
+                                autoFocus
+                            />
+                            <Button type="submit" size="lg" className="h-12 border-3 px-6">
+                                <Plus size={24} />
+                            </Button>
+                        </form>
+                    </div>
+                    {folders.length === 0 && (
+                        <div className="text-center py-12 opacity-50">
+                            <p className="font-bold text-xl uppercase">No Folders Yet</p>
+                            <p className="text-sm">Create one above to get started!</p>
+                        </div>
                     )}
                 </div>
             ) : (
