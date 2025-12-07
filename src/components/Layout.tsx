@@ -209,7 +209,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
 
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8 overflow-x-hidden" {...handlers}>
+                <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-36 md:pb-8 overflow-x-hidden" {...handlers}>
                     <div className="max-w-4xl mx-auto min-h-[calc(100vh-8rem)] flex flex-col">
                         <div className="flex-1 relative">
                             {children}
