@@ -22,6 +22,7 @@ export interface Task {
 interface TodoContextType {
     tasks: Task[];
     history: Task[];
+    folders: string[];
     addTask: (text: string, type: TaskType, priority: Priority, recurring: boolean, category?: string) => void;
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
@@ -29,6 +30,8 @@ interface TodoContextType {
     togglePriority: (id: string) => void;
     toggleRecurring: (id: string) => void;
     moveTaskToType: (id: string, type: TaskType) => void;
+    addFolder: (name: string) => void;
+    deleteFolder: (name: string) => void;
     stats: {
         streak: number;
         totalCompleted: number;
@@ -73,6 +76,11 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         return saved ? JSON.parse(saved) : { streak: 0, totalCompleted: 0, lastActiveDate: null };
     });
 
+    const [folders, setFolders] = useState<string[]>(() => {
+        const saved = localStorage.getItem('neo-folders');
+        return saved ? JSON.parse(saved) : [];
+    });
+
     useEffect(() => {
         localStorage.setItem('neo-tasks', JSON.stringify(tasks));
     }, [tasks]);
@@ -84,6 +92,24 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         localStorage.setItem('neo-stats', JSON.stringify(stats));
     }, [stats]);
+
+    useEffect(() => {
+        localStorage.setItem('neo-folders', JSON.stringify(folders));
+    }, [folders]);
+
+    const addFolder = (name: string) => {
+        if (!folders.includes(name)) {
+            setFolders(prev => [...prev, name]);
+        }
+    };
+
+    const deleteFolder = (name: string) => {
+        setFolders(prev => prev.filter(f => f !== name));
+        // Optional: Remove category from tasks? Or keep them as orphaned? 
+        // Keeping them is safer for now, or we can prompt. 
+        // For simplicity, let's just clear the category on tasks.
+        setTasks(prev => prev.map(t => t.category === name ? { ...t, category: undefined } : t));
+    };
 
     const addTask = (text: string, type: TaskType, priority: Priority, recurring: boolean, category?: string) => {
         const newTask: Task = {
@@ -207,6 +233,9 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
             togglePriority,
             toggleRecurring,
             moveTaskToType,
+            addFolder,
+            deleteFolder,
+            folders,
             stats
         }}>
             {children}

@@ -1,18 +1,32 @@
-import { type ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
-import { LayoutDashboard, Calendar, History, Sprout } from "lucide-react";
+import { LayoutDashboard, Calendar, History, Sprout, Folder, Plus, Trash2, X } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useSwipeable } from "react-swipeable";
+import { useTodo } from "../context/TodoContext";
+import { Input } from "./ui/Input";
 
 interface LayoutProps {
     children: ReactNode;
-    activeTab: 'today' | 'tomorrow' | 'history' | 'garden';
-    onTabChange: (tab: 'today' | 'tomorrow' | 'history' | 'garden') => void;
+    activeTab: string;
+    onTabChange: (tab: string) => void;
 }
 
 export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
-    const TABS: ('today' | 'tomorrow' | 'garden' | 'history')[] = ['today', 'tomorrow', 'garden', 'history'];
+    const { folders, addFolder, deleteFolder } = useTodo();
+    const [isAddingFolder, setIsAddingFolder] = useState(false);
+    const [newFolderName, setNewFolderName] = useState("");
+    const TABS: string[] = ['today', 'tomorrow', 'garden', 'history', ...folders];
+
+    const handleAddFolder = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newFolderName.trim()) {
+            addFolder(newFolderName.trim());
+            setNewFolderName("");
+            setIsAddingFolder(false);
+        }
+    };
 
     const handlers = useSwipeable({
         onSwipedLeft: () => {
@@ -67,6 +81,53 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                             label="History"
                         />
                     </nav>
+
+                    <div className="mt-8">
+                        <div className="flex items-center justify-between mb-2 px-2">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-neo-dark/50">Folders</h3>
+                            <button onClick={() => setIsAddingFolder(!isAddingFolder)} className="text-neo-dark hover:bg-neo-secondary rounded p-1">
+                                <Plus size={16} strokeWidth={3} />
+                            </button>
+                        </div>
+
+                        {isAddingFolder && (
+                            <form onSubmit={handleAddFolder} className="mb-4 px-2 flex gap-1">
+                                <Input
+                                    value={newFolderName}
+                                    onChange={(e) => setNewFolderName(e.target.value)}
+                                    placeholder="Name..."
+                                    className="h-8 text-xs min-h-0"
+                                    autoFocus
+                                />
+                                <button type="submit" className="bg-neo-dark text-neo-white px-2 rounded font-bold text-xs hover:bg-neo-dark/80">
+                                    OK
+                                </button>
+                            </form>
+                        )}
+
+                        <nav className="flex flex-col gap-1 max-h-64 overflow-y-auto">
+                            {folders.map(folder => (
+                                <div key={folder} className="group flex items-center">
+                                    <NavButton
+                                        active={activeTab === folder}
+                                        onClick={() => onTabChange(folder)}
+                                        icon={<Folder size={18} />}
+                                        label={folder}
+                                    />
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); deleteFolder(folder); }}
+                                        className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-600 transition-opacity"
+                                        title="Delete Folder"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+                            ))}
+                            {folders.length === 0 && (
+                                <p className="text-xs text-neo-dark/40 italic px-2">No folders yet</p>
+                            )}
+                        </nav>
+                    </div>
 
                     <div className="mt-auto pt-6 border-t-3 border-neo-dark">
                         <div className="flex flex-col gap-1">
@@ -124,10 +185,15 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                     mobile
                 />
                 <NavButton
-                    active={activeTab === 'history'}
-                    onClick={() => onTabChange('history')}
-                    icon={<History size={24} />}
-                    label="History"
+                    active={folders.includes(activeTab) || activeTab === 'folders-view'}
+                    /* If active tab is a folder, OR we are in a folder view mode (implied), keep this active.
+                       Clicking this should probably cycle folders or open a menu?
+                       For now, let's just make it select the first folder if available. 
+                       Ideally we need a better mobile UI for multiple folders.
+                    */
+                    onClick={() => onTabChange(folders.length > 0 ? folders[0] : 'today')}
+                    icon={<Folder size={24} />}
+                    label="Folders"
                     mobile
                 />
             </nav>

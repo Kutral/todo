@@ -9,31 +9,42 @@ import { Button } from './components/ui/Button';
 import { Plus } from 'lucide-react';
 
 function TodoApp() {
-    const [activeTab, setActiveTab] = useState<'today' | 'tomorrow' | 'history' | 'garden'>('today');
-    const { tasks, history, addTask } = useTodo();
+    const [activeTab, setActiveTab] = useState('today');
+    const { tasks, history, addTask, folders } = useTodo();
     const [newTask, setNewTask] = useState('');
     const [priority, setPriority] = useState<'normal' | 'medium' | 'urgent'>('normal');
     const [recurring, setRecurring] = useState(false);
-    const [category, setCategory] = useState('');
-    const [showCategoryInput, setShowCategoryInput] = useState(false);
+    // category state is now used for selecting folder when in Today/Tomorrow
+    const [selectedFolder, setSelectedFolder] = useState<string>('');
+    const [showFolderSelect, setShowFolderSelect] = useState(false);
+
+    const isFolderTab = folders.includes(activeTab);
 
     const handleAddTask = (e: React.FormEvent) => {
         e.preventDefault();
         if (!newTask.trim()) return;
 
-        // If adding from tomorrow tab, add to tomorrow, else today
+        // If in a folder tab, force that category
+        const taskCategory = isFolderTab ? activeTab : selectedFolder || undefined;
+
+        // If adding from tomorrow tab, add to tomorrow. If in folder tab, default to today unless specified?
+        // Let's assume folder tasks are 'today' by default but categorized.
         const type = activeTab === 'tomorrow' ? 'tomorrow' : 'today';
-        addTask(newTask, type, priority, recurring, category.trim() || undefined);
+
+        addTask(newTask, type, priority, recurring, taskCategory);
         setNewTask('');
         setPriority('normal');
         setRecurring(false);
-        setCategory('');
-        setShowCategoryInput(false);
+        setSelectedFolder('');
+        setShowFolderSelect(false);
     };
 
     const filteredTasks = tasks.filter(t => {
         if (activeTab === 'tomorrow') {
             return t.type === 'tomorrow' || (t.type === 'today' && t.recurring);
+        }
+        if (isFolderTab) {
+            return t.category === activeTab;
         }
         return t.type === activeTab;
     });
@@ -95,9 +106,14 @@ function TodoApp() {
                 <div className="space-y-4 md:space-y-6">
                     <header className="flex justify-between items-end mb-4 md:mb-8">
                         <div>
-                            <h2 className="text-2xl md:text-4xl font-black uppercase">{activeTab}</h2>
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-2xl md:text-4xl font-black uppercase">{activeTab}</h2>
+                                {isFolderTab && (
+                                    <span className="bg-neo-dark text-neo-white text-xs px-2 py-1 font-bold uppercase tracking-wider rounded-sm">FOLDER</span>
+                                )}
+                            </div>
                             <p className="text-neo-dark/70 font-bold mt-1 md:mt-2 text-sm md:text-base">
-                                {displayDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                                {isFolderTab ? `Tasks in ${activeTab}` : displayDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                             </p>
                         </div>
                         <div className="text-right hidden md:block">
@@ -111,21 +127,23 @@ function TodoApp() {
                                 <Input
                                     value={newTask}
                                     onChange={(e) => setNewTask(e.target.value)}
-                                    placeholder={`Add task...`}
+                                    placeholder={isFolderTab ? `Add to ${activeTab}...` : `Add task...`}
                                     className={`pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'border-neo-primary focus-visible:ring-neo-primary' :
                                         priority === 'medium' ? 'border-neo-secondary focus-visible:ring-neo-secondary' :
                                             ''
                                         }`}
                                 />
                                 <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowCategoryInput(!showCategoryInput)}
-                                        className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${category ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
-                                        title="Add Category"
-                                    >
-                                        #
-                                    </button>
+                                    {!isFolderTab && folders.length > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowFolderSelect(!showFolderSelect)}
+                                            className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
+                                            title="Select Folder"
+                                        >
+                                            F
+                                        </button>
+                                    )}
                                     <button
                                         type="button"
                                         onClick={() => setRecurring(!recurring)}
@@ -157,14 +175,19 @@ function TodoApp() {
                                 <Plus size={24} strokeWidth={3} className="md:w-6 md:h-6" />
                             </Button>
                         </div>
-                        {showCategoryInput && (
-                            <Input
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                                placeholder="Category name (e.g. Work, Gym)..."
-                                className="h-10 text-sm border-2 border-neo-dark bg-neo-white"
-                                autoFocus
-                            />
+                        {showFolderSelect && !isFolderTab && (
+                            <div className="flex gap-2 flex-wrap">
+                                {folders.map(f => (
+                                    <button
+                                        key={f}
+                                        type="button"
+                                        onClick={() => setSelectedFolder(selectedFolder === f ? '' : f)}
+                                        className={`px-3 py-1 text-xs font-bold border-2 border-neo-dark uppercase rounded-sm transition-all ${selectedFolder === f ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/70 hover:bg-neo-secondary'}`}
+                                    >
+                                        {f}
+                                    </button>
+                                ))}
+                            </div>
                         )}
                     </form>
 

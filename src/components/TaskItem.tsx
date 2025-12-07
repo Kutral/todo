@@ -33,8 +33,8 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
 
             <div className="flex-1 min-w-0">
                 {task.category && (
-                    <span className="inline-block bg-neo-dark text-neo-white text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded-sm mr-2 mb-1 uppercase tracking-wider">
-                        #{task.category}
+                    <span className="inline-flex items-center gap-1 bg-neo-secondary/50 text-neo-dark text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded-sm mr-2 mb-1 uppercase tracking-wider border border-neo-dark/10">
+                        {task.category}
                     </span>
                 )}
                 <span className={cn(
