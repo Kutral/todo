@@ -6,7 +6,7 @@ import { DigitalGarden } from './components/DigitalGarden';
 import { useTodo, type Task } from './context/TodoContext';
 import { Input } from './components/ui/Input';
 import { Button } from './components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Layers } from 'lucide-react';
 
 function TodoApp() {
     const [activeTab, setActiveTab] = useState('today');
