@@ -148,7 +148,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
                 priority,
                 recurring,
                 type,
-                category: category || null,
+                category: category || undefined,
                 date: new Date().toISOString(),
                 createdAt: Date.now(),
             };
