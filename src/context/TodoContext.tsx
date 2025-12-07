@@ -24,6 +24,7 @@ export interface Task {
 interface TodoContextType {
     user: User | null;
     loading: boolean;
+    error: string | null;
     tasks: Task[];
     history: Task[];
     folders: string[];
@@ -49,6 +50,7 @@ const TodoContext = createContext<TodoContextType | undefined>(undefined);
 export function TodoProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [authLoading, setAuthLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [tasks, setTasks] = useState<Task[]>([]); // Active tasks
     const [history, setHistory] = useState<Task[]>([]); // Completed tasks
     const [folders, setFolders] = useState<string[]>([]);
@@ -278,6 +280,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         <TodoContext.Provider value={{
             user,
             loading: authLoading,
+            error,
             tasks,
             history,
             folders,

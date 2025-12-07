@@ -20,6 +20,22 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
     const [newFolderName, setNewFolderName] = useState("");
     const TABS: string[] = ['today', 'tomorrow', 'garden', 'history', ...folders];
 
+    const handlers = useSwipeable({
+        onSwipedLeft: () => {
+            const currentIndex = TABS.indexOf(activeTab);
+            if (currentIndex < TABS.length - 1) {
+                onTabChange(TABS[currentIndex + 1]);
+            }
+        },
+        onSwipedRight: () => {
+            const currentIndex = TABS.indexOf(activeTab);
+            if (currentIndex > 0) {
+                onTabChange(TABS[currentIndex - 1]);
+            }
+        },
+        trackMouse: false
+    });
+
     // Handle Auth State
     if (loading) {
         return (
