@@ -19,25 +19,34 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
     const { toggleTask, deleteTask, togglePriority, toggleRecurring, moveTaskToType } = useTodo();
     const [showGratification, setShowGratification] = useState(false);
     const [message, setMessage] = useState("");
+    const [isCompleting, setIsCompleting] = useState(false);
 
     const handleToggle = (id: string) => {
-        if (!task.completed) {
-            // Trigger confetti
-            confetti({
-                particleCount: 150,
-                spread: 100,
-                origin: { y: 0.6 },
-                colors: ['#000000', '#FFDE00', '#FFFFFF', '#FF3E3E', '#3E3EFF'], // Neo-brutalist colors
-                zIndex: 9999,
-                disableForReducedMotion: false
-            });
-
-            // Show random message
-            setMessage(GRATIFYING_MESSAGES[Math.floor(Math.random() * GRATIFYING_MESSAGES.length)]);
-            setShowGratification(true);
-            setTimeout(() => setShowGratification(false), 2000);
+        if (task.completed) {
+            toggleTask(id);
+            return;
         }
-        toggleTask(id);
+
+        setIsCompleting(true);
+
+        // Trigger confetti
+        confetti({
+            particleCount: 150,
+            spread: 100,
+            origin: { y: 0.6 },
+            colors: ['#000000', '#FFDE00', '#FFFFFF', '#FF3E3E', '#3E3EFF'], // Neo-brutalist colors
+            zIndex: 9999,
+            disableForReducedMotion: false
+        });
+
+        // Show random message
+        setMessage(GRATIFYING_MESSAGES[Math.floor(Math.random() * GRATIFYING_MESSAGES.length)]);
+        setShowGratification(true);
+
+        setTimeout(() => {
+            toggleTask(id);
+            // Component might unmount here, which is fine
+        }, 1000); // 1 second delay to see the message
     };
 
     return (
@@ -70,9 +79,9 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
             <button
                 onClick={() => handleToggle(task.id)}
                 className="h-6 w-6 border-3 border-neo-dark flex items-center justify-center hover:bg-neo-secondary transition-colors"
-                aria-label={task.completed ? "Mark as incomplete" : "Mark as complete"}
+                aria-label={(task.completed || isCompleting) ? "Mark as incomplete" : "Mark as complete"}
             >
-                {task.completed && <Check size={16} strokeWidth={4} />}
+                {(task.completed || isCompleting) && <Check size={16} strokeWidth={4} />}
             </button>
 
             <div className="flex-1 min-w-0">
@@ -83,7 +92,7 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                 )}
                 <span className={cn(
                     "font-bold text-base md:text-lg break-all transition-all duration-300",
-                    task.completed && "line-through text-gray-400 blur-[0.5px]"
+                    (task.completed || isCompleting) && "line-through text-gray-400 blur-[0.5px]"
                 )}>
                     {task.text}
                 </span>
