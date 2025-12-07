@@ -2,7 +2,7 @@
 
 A Neo-Brutalist Productivity Application built for simple, effective, and aesthetic task management.
 
-![NeoTodo Banner](/todo/logo.png)
+![NeoTodo Banner](public/logo.png)
 
 ## Features
 
