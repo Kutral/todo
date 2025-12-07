@@ -24,11 +24,12 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
         if (!task.completed) {
             // Trigger confetti
             confetti({
-                particleCount: 100,
-                spread: 70,
+                particleCount: 150,
+                spread: 100,
                 origin: { y: 0.6 },
-                colors: ['#000000', '#FFDE00', '#FFFFFF'], // Neo-brutalist colors
-                disableForReducedMotion: true
+                colors: ['#000000', '#FFDE00', '#FFFFFF', '#FF3E3E', '#3E3EFF'], // Neo-brutalist colors
+                zIndex: 9999,
+                disableForReducedMotion: false
             });
 
             // Show random message
@@ -46,7 +47,7 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -100 }}
             className={cn(
-                "group flex items-center gap-2 md:gap-3 p-3 md:p-4 border-2 md:border-3 border-neo-dark bg-neo-white shadow-neo mb-2 md:mb-3 transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none relative overflow-hidden",
+                "group flex items-center gap-2 md:gap-3 p-3 md:p-4 border-2 md:border-3 border-neo-dark bg-neo-white shadow-neo mb-2 md:mb-3 transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none relative",
                 task.priority === 'urgent' && "border-neo-primary bg-neo-primary/10",
                 task.priority === 'medium' && "border-neo-secondary bg-neo-secondary/10"
             )}
@@ -57,9 +58,9 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                         initial={{ opacity: 0, scale: 0.5, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.5, y: -10 }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 pointer-events-none whitespace-nowrap"
                     >
-                        <span className="font-black text-2xl uppercase italic bg-neo-primary text-neo-dark px-2 py-1 border-2 border-neo-dark shadow-neo rotate-[-5deg]">
+                        <span className="font-black text-2xl md:text-3xl uppercase italic bg-neo-primary text-neo-dark px-2 py-1 border-2 border-neo-dark shadow-neo rotate-[-5deg] block">
                             {message}
                         </span>
                     </motion.div>
