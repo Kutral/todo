@@ -104,7 +104,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
                 <aside className="w-64 border-r-3 border-neo-dark bg-neo-white hidden md:flex flex-col p-4 gap-4">
-                    <div className="mb-6 flex items-center justify-center px-2">
+                    <div className="mb-6 flex items-center justify-center">
                         <img src="/todo/logo.png" alt="NeoTodo" className="w-full h-auto object-contain" />
                     </div>
 
