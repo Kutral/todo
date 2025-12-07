@@ -159,22 +159,24 @@ function TodoApp() {
                         </p>
                     </div>
 
-                    <div className="mt-4 p-4 md:p-6 border-2 border-dashed border-neo-dark/30 rounded-lg bg-neo-bg/50">
-                        <h3 className="font-bold uppercase mb-2 text-sm text-neo-dark/60 tracking-widest">Create New Stack</h3>
-                        <form onSubmit={handleCreateFolder} className="flex gap-2">
-                            <Input
-                                value={newTask}
-                                onChange={(e) => setNewTask(e.target.value)}
-                                placeholder="e.g. Health, Deep Work..."
-                                className="h-10 text-base border-2 bg-transparent focus:bg-white transition-colors"
-                            />
-                            <Button type="submit" size="default" className="h-10 border-2 px-4 bg-neo-dark text-neo-white hover:bg-neo-primary hover:text-neo-dark">
-                                <Plus size={20} />
-                            </Button>
-                        </form>
+                    <div className="sticky top-0 z-20 bg-neo-bg py-2">
+                        <div className="p-4 md:p-6 border-2 border-dashed border-neo-dark/30 rounded-lg bg-neo-bg/50 backdrop-blur-sm">
+                            <h3 className="font-bold uppercase mb-2 text-sm text-neo-dark/60 tracking-widest">Create New Stack</h3>
+                            <form onSubmit={handleCreateFolder} className="flex gap-2">
+                                <Input
+                                    value={newTask}
+                                    onChange={(e) => setNewTask(e.target.value)}
+                                    placeholder="e.g. Health, Deep Work..."
+                                    className="h-10 text-base border-2 bg-transparent focus:bg-white transition-colors"
+                                />
+                                <Button type="submit" size="default" className="h-10 border-2 px-4 bg-neo-dark text-neo-white hover:bg-neo-primary hover:text-neo-dark">
+                                    <Plus size={20} />
+                                </Button>
+                            </form>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 md:gap-4 mt-4">
+                    <div className="grid grid-cols-2 gap-3 md:gap-4 mt-2">
                         {folders.map(folder => {
                             const count = tasks.filter(t => t.category === folder).length;
                             return (
@@ -290,7 +292,7 @@ function TodoApp() {
                             <Button
                                 type="button"
                                 size="lg"
-                                className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
+                                className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors touch-none select-none ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
                                     priority === 'medium' ? 'bg-neo-secondary text-neo-dark hover:bg-neo-secondary/90' :
                                         ''
                                     }`}
