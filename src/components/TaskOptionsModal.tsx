@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from './ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, RotateCw, X } from 'lucide-react';
+import { RotateCw, X } from 'lucide-react';
 import { useTodo } from '../context/TodoContext';
 
 interface TaskOptionsModalProps {
@@ -57,8 +57,8 @@ export function TaskOptionsModal({ isOpen, onClose, onSave, initialComplexity, i
                                         key={p}
                                         onClick={() => setComplexity(p as any)}
                                         className={`flex-1 py-2 font-bold uppercase border-2 border-neo-dark transition-all rounded-sm ${complexity === p
-                                                ? (p === 'urgent' ? 'bg-neo-primary' : p === 'medium' ? 'bg-neo-secondary' : 'bg-neo-white')
-                                                : 'bg-transparent text-neo-dark/50 hover:bg-neo-dark/5'
+                                            ? (p === 'urgent' ? 'bg-neo-primary' : p === 'medium' ? 'bg-neo-secondary' : 'bg-neo-white')
+                                            : 'bg-transparent text-neo-dark/50 hover:bg-neo-dark/5'
                                             }`}
                                     >
                                         {p}

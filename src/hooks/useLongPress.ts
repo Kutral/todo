@@ -6,8 +6,8 @@ export function useLongPress(
     { shouldPreventDefault = true, delay = 500 } = {}
 ) {
     const [longPressTriggered, setLongPressTriggered] = useState(false);
-    const timeout = useRef<NodeJS.Timeout>();
-    const target = useRef<HTMLElement>();
+    const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const target = useRef<HTMLElement | null>(null);
 
     const start = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
