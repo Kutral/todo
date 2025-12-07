@@ -113,7 +113,7 @@ function TodoApp() {
                 <DigitalGarden />
             ) : activeTab === 'history' ? (
                 <div className="space-y-8">
-                    <h2 className="text-4xl font-black uppercase mb-8">History</h2>
+                    <h2 className="text-4xl font-black uppercase mb-8">Past</h2>
                     {groupedHistory.length === 0 ? (
                         <TaskList tasks={[]} emptyMessage="No history yet. Go do something!" />
                     ) : (
