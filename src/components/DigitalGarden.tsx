@@ -104,7 +104,6 @@ export function DigitalGarden() {
             </div>
 
             {/* Streak Calendar */}
-            {/* Streak Calendar */}
             <Card className="bg-neo-white border-neo-dark">
                 <CardHeader>
                     <CardTitle className="flex justify-between items-center">
@@ -117,12 +116,12 @@ export function DigitalGarden() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid grid-cols-7 gap-2 text-center mb-2">
+                    <div className="grid grid-cols-7 gap-1 text-center mb-2">
                         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                            <div key={day} className="text-xs font-black text-neo-dark/30 uppercase">{day}</div>
+                            <div key={day} className="text-[10px] md:text-xs font-black text-neo-dark/40 uppercase">{day}</div>
                         ))}
                     </div>
-                    <div className="grid grid-cols-7 gap-2">
+                    <div className="grid grid-cols-7 gap-1 md:gap-2 mb-4">
                         {calendarDays.map((day, i) => {
                             const dateKey = format(day, 'yyyy-MM-dd');
                             const isActive = activeDates.has(dateKey);
@@ -133,22 +132,34 @@ export function DigitalGarden() {
                                 <div
                                     key={i}
                                     className={`
-                                        aspect-square flex items-center justify-center text-sm font-bold rounded-md transition-all relative
+                                        aspect-square flex items-center justify-center text-xs md:text-sm font-bold rounded-full transition-all relative
                                         ${!isCurrentMonth ? 'opacity-20' : ''}
                                         ${isActive
-                                            ? 'bg-green-200 text-green-900 shadow-sm'
-                                            : 'bg-transparent text-neo-dark/60 hover:bg-neo-dark/5'
+                                            ? 'bg-green-400 text-white shadow-sm'
+                                            : 'bg-transparent text-neo-dark/60'
                                         }
-                                        ${isCurrentDay ? 'ring-2 ring-neo-dark ring-offset-1 z-10' : ''}
+                                        ${isCurrentDay ? 'ring-2 ring-neo-dark ring-offset-2 z-10' : ''}
                                     `}
                                 >
                                     {isActive && (
-                                        <div className="absolute inset-0 bg-green-400 opacity-20 rounded-md animate-pulse"></div>
+                                        <div className="absolute inset-0 bg-green-500 opacity-20 rounded-full animate-pulse"></div>
                                     )}
                                     <span className="relative z-10">{format(day, 'd')}</span>
                                 </div>
                             );
                         })}
+                    </div>
+
+                    {/* Legend */}
+                    <div className="flex justify-center gap-6 mt-4 pt-4 border-t-2 border-neo-dark/5">
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                            <span className="text-xs font-bold uppercase text-neo-dark/60">Streak</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full border-2 border-neo-dark"></div>
+                            <span className="text-xs font-bold uppercase text-neo-dark/60">Today</span>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
