@@ -173,80 +173,102 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
     const toggleTask = async (id: string) => {
         if (!user) return;
-        const task = [...tasks, ...history].find(t => t.id === id);
-        if (!task) return;
+        try {
+            const task = [...tasks, ...history].find(t => t.id === id);
+            if (!task) return;
 
-        if (!task.completed) {
-            const now = new Date();
-            const today = startOfDay(now);
-            const completedAt = now.toISOString();
+            if (!task.completed) {
+                const now = new Date();
+                const today = startOfDay(now);
+                const completedAt = now.toISOString();
 
-            let newStreak = stats.streak;
-            const newTotal = stats.totalCompleted + 1;
-            const lastActive = stats.lastActiveDate ? parseISO(stats.lastActiveDate) : null;
-            const newLastActive = today.toISOString();
+                let newStreak = stats.streak;
+                const newTotal = stats.totalCompleted + 1;
+                const lastActive = stats.lastActiveDate ? parseISO(stats.lastActiveDate) : null;
+                const newLastActive = today.toISOString();
 
-            if (!lastActive) {
-                newStreak = 1;
-            } else if (isSameDay(lastActive, subDays(today, 1))) {
-                newStreak += 1;
-            } else if (isSameDay(lastActive, today)) {
-                newStreak = stats.streak;
+                if (!lastActive) {
+                    newStreak = 1;
+                } else if (isSameDay(lastActive, subDays(today, 1))) {
+                    newStreak += 1;
+                } else if (isSameDay(lastActive, today)) {
+                    newStreak = stats.streak;
+                } else {
+                    newStreak = 1;
+                }
+
+                const batch = writeBatch(db);
+
+                if (task.recurring) {
+                    const nextTask: Task = {
+                        ...task,
+                        id: uuidv4(),
+                        completed: false,
+                        type: 'tomorrow',
+                        date: now.toISOString(),
+                        createdAt: Date.now(),
+                        completedAt: undefined
+                    };
+                    // Sanitize to remove undefined values (Firestore crashes otherwise)
+                    const nextTaskSafe = JSON.parse(JSON.stringify(nextTask));
+                    batch.set(doc(db, 'users', user.uid, 'tasks', nextTask.id), nextTaskSafe);
+                    batch.update(doc(db, 'users', user.uid, 'tasks', task.id), { completed: true, completedAt });
+                } else {
+                    batch.update(doc(db, 'users', user.uid, 'tasks', task.id), { completed: true, completedAt });
+                }
+
+                batch.set(doc(db, 'users', user.uid, 'data', 'metadata'), {
+                    folders,
+                    stats: { streak: newStreak, totalCompleted: newTotal, lastActiveDate: newLastActive }
+                }, { merge: true });
+
+                await batch.commit();
             } else {
-                newStreak = 1;
+                const batch = writeBatch(db);
+                batch.update(doc(db, 'users', user.uid, 'tasks', task.id), { completed: false, completedAt: null });
+                batch.set(doc(db, 'users', user.uid, 'data', 'metadata'), {
+                    folders,
+                    stats: { ...stats, totalCompleted: Math.max(0, stats.totalCompleted - 1) }
+                }, { merge: true });
+                await batch.commit();
             }
-
-            const batch = writeBatch(db);
-
-            if (task.recurring) {
-                const nextTask: Task = {
-                    ...task,
-                    id: uuidv4(),
-                    completed: false,
-                    type: 'tomorrow',
-                    date: now.toISOString(),
-                    createdAt: Date.now(),
-                    completedAt: undefined
-                };
-                batch.set(doc(db, 'users', user.uid, 'tasks', nextTask.id), nextTask);
-                batch.update(doc(db, 'users', user.uid, 'tasks', task.id), { completed: true, completedAt });
-            } else {
-                batch.update(doc(db, 'users', user.uid, 'tasks', task.id), { completed: true, completedAt });
-            }
-
-            batch.set(doc(db, 'users', user.uid, 'data', 'metadata'), {
-                folders,
-                stats: { streak: newStreak, totalCompleted: newTotal, lastActiveDate: newLastActive }
-            }, { merge: true });
-
-            await batch.commit();
-        } else {
-            const batch = writeBatch(db);
-            batch.update(doc(db, 'users', user.uid, 'tasks', task.id), { completed: false, completedAt: null });
-            batch.set(doc(db, 'users', user.uid, 'data', 'metadata'), {
-                folders,
-                stats: { ...stats, totalCompleted: Math.max(0, stats.totalCompleted - 1) }
-            }, { merge: true });
-            await batch.commit();
+        } catch (err: any) {
+            console.error("Toggle Task Error:", err);
+            setError("Failed to update task: " + err.message);
         }
     };
 
     const deleteTask = async (id: string) => {
         if (!user) return;
-        await deleteDoc(doc(db, 'users', user.uid, 'tasks', id));
+        try {
+            await deleteDoc(doc(db, 'users', user.uid, 'tasks', id));
+        } catch (err: any) {
+            console.error("Delete Task Error:", err);
+            setError("Failed to delete task: " + err.message);
+        }
     };
 
     const updateTask = async (id: string, text: string) => {
         if (!user) return;
-        await updateDoc(doc(db, 'users', user.uid, 'tasks', id), { text });
+        try {
+            await updateDoc(doc(db, 'users', user.uid, 'tasks', id), { text });
+        } catch (err: any) {
+            console.error("Update Task Error:", err);
+            setError("Failed to update task: " + err.message);
+        }
     };
 
     const togglePriority = async (id: string) => {
         if (!user) return;
-        const task = [...tasks, ...history].find(t => t.id === id);
-        if (!task) return;
-        const nextP = task.priority === 'urgent' ? 'normal' : task.priority === 'medium' ? 'urgent' : 'medium';
-        await updateDoc(doc(db, 'users', user.uid, 'tasks', id), { priority: nextP });
+        try {
+            const task = [...tasks, ...history].find(t => t.id === id);
+            if (!task) return;
+            const nextP = task.priority === 'urgent' ? 'normal' : task.priority === 'medium' ? 'urgent' : 'medium';
+            await updateDoc(doc(db, 'users', user.uid, 'tasks', id), { priority: nextP });
+        } catch (err: any) {
+            console.error("Toggle Priority Error:", err);
+            setError("Failed to update priority: " + err.message);
+        }
     };
 
     const toggleRecurring = async (id: string) => {
