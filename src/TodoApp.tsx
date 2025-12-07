@@ -14,7 +14,7 @@ function TodoApp() {
     const [newTask, setNewTask] = useState('');
     const [priority, setPriority] = useState<'normal' | 'medium' | 'urgent'>('normal');
     const [recurring, setRecurring] = useState(false);
-    // category state is now used for selecting folder when in Today/Tomorrow
+    // category state is now used for selecting stack when in Today/Tomorrow
     const [selectedFolder, setSelectedFolder] = useState<string>('');
     const [showFolderSelect, setShowFolderSelect] = useState(false);
 
@@ -90,6 +90,24 @@ function TodoApp() {
             .sort((a, b) => b.date.getTime() - a.date.getTime());
     }, [history]);
 
+    // Calculate Momentum logic
+    const completedToday = history.filter(t =>
+        (t.type === activeTab || (isFolderTab && t.category === activeTab)) &&
+        (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))
+    ).length;
+
+    // For momentum, we ideally want "Total Tasks for Today including completed"
+    // But since `tasks` state only holds incomplete tasks, we sum filteredTasks + completedToday
+    const totalTasksForView = filteredTasks.length + completedToday;
+    const progressPercent = totalTasksForView === 0 ? 0 : Math.round((completedToday / totalTasksForView) * 100);
+
+    // Generate progress blocks: 5 blocks total
+    // 0-20% = 1 block, 21-40% = 2 blocks, etc.
+    const filledBlocks = totalTasksForView === 0 ? 0 : Math.ceil((completedToday / totalTasksForView) * 5);
+    const emptyBlocks = 5 - filledBlocks;
+    const progressVisual = '█'.repeat(filledBlocks) + '░'.repeat(emptyBlocks);
+
+
     return (
         <Layout activeTab={activeTab} onTabChange={setActiveTab}>
             {activeTab === 'garden' ? (
@@ -112,7 +130,7 @@ function TodoApp() {
                 </div>
             ) : activeTab === 'folders-manage' ? (
                 <div className="space-y-6">
-                    <h2 className="text-4xl font-black uppercase mb-8">Folders</h2>
+                    <h2 className="text-4xl font-black uppercase mb-8">Stacks</h2>
 
                     <div className="grid grid-cols-2 gap-4">
                         {folders.map(folder => (
@@ -135,12 +153,12 @@ function TodoApp() {
                     </div>
 
                     <div className="mt-8 p-6 border-3 border-neo-dark bg-neo-white shadow-neo">
-                        <h3 className="font-black uppercase mb-4 text-xl">Create New Folder</h3>
+                        <h3 className="font-black uppercase mb-4 text-xl">Create New Stack</h3>
                         <form onSubmit={handleCreateFolder} className="flex gap-2">
                             <Input
                                 value={newTask}
                                 onChange={(e) => setNewTask(e.target.value)}
-                                placeholder="Folder Name..."
+                                placeholder="Stack Name..."
                                 className="h-12 border-3 text-lg"
                             />
                             <Button type="submit" size="lg" className="h-12 border-3 px-6">
@@ -150,7 +168,7 @@ function TodoApp() {
                     </div>
                     {folders.length === 0 && (
                         <div className="text-center py-12 opacity-50">
-                            <p className="font-bold text-xl uppercase">No Folders Yet</p>
+                            <p className="font-bold text-xl uppercase">No Stacks Yet</p>
                             <p className="text-sm">Create one above to get started!</p>
                         </div>
                     )}
@@ -162,7 +180,7 @@ function TodoApp() {
                             <div className="flex items-center gap-3">
                                 <h2 className="text-2xl md:text-4xl font-black uppercase">{activeTab}</h2>
                                 {isFolderTab && (
-                                    <span className="bg-neo-dark text-neo-white text-xs px-2 py-1 font-bold uppercase tracking-wider rounded-sm">FOLDER</span>
+                                    <span className="bg-neo-dark text-neo-white text-xs px-2 py-1 font-bold uppercase tracking-wider rounded-sm">STACK</span>
                                 )}
                             </div>
                             <p className="text-neo-dark/70 font-bold mt-1 md:mt-2 text-sm md:text-base">
@@ -170,7 +188,15 @@ function TodoApp() {
                             </p>
                         </div>
                         <div className="text-right hidden md:block">
-                            <p className="text-sm font-bold">Tasks: {filteredTasks.length}</p>
+                            {/* Momentum Bar */}
+                            <div className="flex flex-col items-end gap-1">
+                                <p className="text-sm font-bold uppercase tracking-wider">
+                                    Tasks: {completedToday}/{totalTasksForView}
+                                </p>
+                                <div className="text-neo-primary text-lg font-black tracking-widest leading-none">
+                                    {progressVisual}
+                                </div>
+                            </div>
                         </div>
                     </header>
 
@@ -192,9 +218,9 @@ function TodoApp() {
                                             type="button"
                                             onClick={() => setShowFolderSelect(!showFolderSelect)}
                                             className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
-                                            title="Select Folder"
+                                            title="Select Stack"
                                         >
-                                            F
+                                            S
                                         </button>
                                     )}
                                     <button
