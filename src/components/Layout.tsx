@@ -15,7 +15,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
-    const { folders, addFolder, deleteFolder, user, logout, loading } = useTodo();
+    const { folders, addFolder, deleteFolder, user, logout, loading, error } = useTodo();
     const [isAddingFolder, setIsAddingFolder] = useState(false);
     const [newFolderName, setNewFolderName] = useState("");
     const TABS: string[] = ['today', 'tomorrow', 'garden', 'history', ...folders];
@@ -25,6 +25,23 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
         return (
             <div className="h-screen bg-neo-bg flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-neo-dark border-r-transparent"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="h-screen bg-neo-bg flex items-center justify-center p-4">
+                <div className="bg-neo-white border-4 border-red-600 p-8 max-w-lg shadow-neo text-center">
+                    <h1 className="text-3xl font-black text-red-600 uppercase mb-4">Critial Error</h1>
+                    <p className="font-bold text-lg mb-6">{error}</p>
+                    <p className="text-sm mb-6 font-mono bg-gray-100 p-2 border-2 border-gray-300">
+                        Check Firebase Console -&gt; Firestore Database
+                    </p>
+                    <Button onClick={logout} className="bg-neo-dark text-neo-white border-2 border-black hover:bg-neo-primary hover:text-neo-dark">
+                        Logout & Try Again
+                    </Button>
+                </div>
             </div>
         );
     }
