@@ -244,28 +244,6 @@ function TodoApp() {
 
                     <form onSubmit={handleAddTask} className="flex flex-col gap-2 mb-4 md:mb-8">
                         <div className="flex gap-2">
-                            <div className="relative flex-1">
-                                <Input
-                                    value={newTask}
-                                    onChange={(e) => setNewTask(e.target.value)}
-                                    placeholder={isFolderTab ? `Add to ${activeTab}...` : `Add task...`}
-                                    className={`pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3 transition-colors ${priority === 'q1' ? 'border-neo-primary focus-visible:ring-neo-primary' :
-                                            priority === 'q2' ? 'border-[#3B82F6] focus-visible:ring-[#3B82F6]' :
-                                                priority === 'q3' ? 'border-neo-secondary focus-visible:ring-neo-secondary' :
-                                                    ''
-                                        }`}
-                                />
-                                <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowOptionsModal(true)}
-                                        className="w-8 h-8 md:hidden flex items-center justify-center text-sm font-bold border-2 border-neo-dark bg-neo-white text-neo-dark hover:bg-neo-secondary transition-all"
-                                        title="Options"
-                                    >
-                                        <SlidersHorizontal size={18} strokeWidth={2.5} />
-                                    </button>
-                                    {!isFolderTab && folders.length > 0 && (
-                                        <button
                                             type="button"
                                             onClick={() => setShowFolderSelect(!showFolderSelect)}
                                             className={`hidden md:flex w-8 h-8 md:w-auto md:h-8 md:px-2 items-center justify-center gap-1 text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
@@ -318,69 +296,72 @@ function TodoApp() {
                             >
                                 <Plus size={24} strokeWidth={3} className="md:w-6 md:h-6" />
                             </Button>
-                        </div>
-                        {showFolderSelect && !isFolderTab && (
-                            <div className="flex gap-2 flex-wrap">
-                                {folders.map(f => (
-                                    <button
-                                        key={f}
-                                        type="button"
-                                        onClick={() => setSelectedFolder(selectedFolder === f ? '' : f)}
-                                        className={`px-3 py-1 text-xs font-bold border-2 border-neo-dark uppercase rounded-sm transition-all ${selectedFolder === f ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/70 hover:bg-neo-secondary'}`}
-                                    >
-                                        {f}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </form>
+                        </div >
+        { showFolderSelect && !isFolderTab && (
+            <div className="flex gap-2 flex-wrap">
+                {folders.map(f => (
+                    <button
+                        key={f}
+                        type="button"
+                        onClick={() => setSelectedFolder(selectedFolder === f ? '' : f)}
+                        className={`px-3 py-1 text-xs font-bold border-2 border-neo-dark uppercase rounded-sm transition-all ${selectedFolder === f ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/70 hover:bg-neo-secondary'}`}
+                    >
+                        {f}
+                    </button>
+                ))}
+            </div>
+        )
+}
+                    </form >
 
-                    {!isFolderTab && filteredTasks.some(t => t.category && folders.includes(t.category)) ? (
-                        <div className="space-y-8">
-                            {/* Uncategorized First */}
-                            {filteredTasks.some(t => !t.category || !folders.includes(t.category)) && (
-                                <div className="space-y-2">
-                                    <h3 className="text-xs font-black text-neo-dark/30 uppercase tracking-widest pl-1">Inbox</h3>
-                                    <TaskList tasks={filteredTasks.filter(t => !t.category || !folders.includes(t.category))} />
-                                </div>
-                            )}
-                            {/* Stack Groups */}
-                            {folders.map(folder => {
-                                const stackTasks = filteredTasks.filter(t => t.category === folder);
-                                if (stackTasks.length === 0) return null;
-                                return (
-                                    <div key={folder} className="space-y-2">
-                                        <h3 className="text-xs font-black text-neo-dark uppercase tracking-widest pl-1 flex items-center gap-2">
-                                            <Folder size={14} className="text-neo-primary" /> {folder}
-                                        </h3>
-                                        <TaskList tasks={stackTasks} />
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <TaskList tasks={filteredTasks} />
-                    )}
-
-                    {/* Completed Tasks Section */}
-                    {history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))).length > 0 && (
-                        <div className="mt-8 pt-8 border-t-3 border-neo-dark/20">
-                            <h3 className="text-xl font-bold uppercase mb-4 text-neo-dark/50">Completed</h3>
-                            <TaskList tasks={history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date())))} />
-                        </div>
-                    )}
+    {!isFolderTab && filteredTasks.some(t => t.category && folders.includes(t.category)) ? (
+        <div className="space-y-8">
+            {/* Uncategorized First */}
+            {filteredTasks.some(t => !t.category || !folders.includes(t.category)) && (
+                <div className="space-y-2">
+                    <h3 className="text-xs font-black text-neo-dark/30 uppercase tracking-widest pl-1">Inbox</h3>
+                    <TaskList tasks={filteredTasks.filter(t => !t.category || !folders.includes(t.category))} />
                 </div>
             )}
+            {/* Stack Groups */}
+            {folders.map(folder => {
+                const stackTasks = filteredTasks.filter(t => t.category === folder);
+                if (stackTasks.length === 0) return null;
+                return (
+                    <div key={folder} className="space-y-2">
+                        <h3 className="text-xs font-black text-neo-dark uppercase tracking-widest pl-1 flex items-center gap-2">
+                            <Folder size={14} className="text-neo-primary" /> {folder}
+                        </h3>
+                        <TaskList tasks={stackTasks} />
+                    </div>
+                );
+            })}
+        </div>
+    ) : (
+        <TaskList tasks={filteredTasks} />
+    )}
 
-            <TaskOptionsModal
-                isOpen={showOptionsModal}
-                onClose={() => setShowOptionsModal(false)}
-                onSave={submitTask}
-                initialComplexity={priority}
-                initialRecurring={recurring}
-                initialStack={selectedFolder}
-            />
-        </Layout>
+{/* Completed Tasks Section */ }
+{
+    history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))).length > 0 && (
+        <div className="mt-8 pt-8 border-t-3 border-neo-dark/20">
+            <h3 className="text-xl font-bold uppercase mb-4 text-neo-dark/50">Completed</h3>
+            <TaskList tasks={history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date())))} />
+        </div>
+    )
+}
+                </div >
+            )}
+
+<TaskOptionsModal
+    isOpen={showOptionsModal}
+    onClose={() => setShowOptionsModal(false)}
+    onSave={submitTask}
+    initialComplexity={priority}
+    initialRecurring={recurring}
+    initialStack={selectedFolder}
+/>
+        </Layout >
     );
 }
 
