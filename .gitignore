@@ -23,3 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 *.bat
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*
