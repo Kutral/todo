@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { isSameDay, subDays, parseISO, startOfDay, isBefore } from 'date-fns';
 import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
-import { collection, query, onSnapshot, doc, setDoc, deleteDoc, updateDoc, writeBatch, getDocs } from 'firebase/firestore';
+import { collection, query, onSnapshot, doc, setDoc, deleteDoc, updateDoc, writeBatch } from 'firebase/firestore';
 
 export type TaskType = 'today' | 'tomorrow';
 export type Priority = 'normal' | 'medium' | 'urgent';
