@@ -186,7 +186,7 @@ function TodoApp() {
                                 {isFolderTab ? `Tasks in ${activeTab}` : displayDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                             </p>
                         </div>
-                        <div className="text-right hidden md:block">
+                        <div className="text-right">
                             {/* Momentum Bar */}
                             <div className="flex flex-col items-end gap-1">
                                 <p className="text-sm font-bold uppercase tracking-wider">
