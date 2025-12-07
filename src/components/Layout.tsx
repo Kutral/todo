@@ -1,3 +1,4 @@
+// v2.0 - Firebase Auth
 import { type ReactNode, useState } from "react";
 import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
