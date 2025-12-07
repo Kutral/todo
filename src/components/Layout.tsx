@@ -45,7 +45,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
     });
 
     return (
-        <div className="min-h-screen bg-neo-bg flex flex-col font-sans selection:bg-neo-primary selection:text-neo-dark">
+        <div className="h-screen bg-neo-bg flex flex-col font-sans selection:bg-neo-primary selection:text-neo-dark">
             <QuoteWidget />
 
             <div className="flex flex-1 overflow-hidden">

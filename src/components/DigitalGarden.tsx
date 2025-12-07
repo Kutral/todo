@@ -121,7 +121,7 @@ export function DigitalGarden() {
             </div>
 
             {/* Streak Calendar */}
-            <Card className="bg-neo-white border-neo-dark">
+            <Card className="bg-neo-white border-neo-dark md:max-w-lg md:mx-auto w-full">
                 <CardHeader>
                     <CardTitle className="flex justify-between items-center">
                         <span>Streak Calendar</span>
