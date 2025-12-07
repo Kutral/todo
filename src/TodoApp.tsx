@@ -2,11 +2,15 @@ import { useState, useMemo } from 'react';
 import { addDays, isSameDay, parseISO, startOfDay, isToday, isYesterday, format } from 'date-fns';
 import { Layout } from './components/Layout';
 import { TaskList } from './components/TaskList';
+import { useState, useMemo } from 'react';
+import { addDays, isSameDay, parseISO, startOfDay, isToday, isYesterday, format } from 'date-fns';
+import { Layout } from './components/Layout';
+import { TaskList } from './components/TaskList';
 import { DigitalGarden } from './components/DigitalGarden';
 import { useTodo, type Task } from './context/TodoContext';
 import { Input } from './components/ui/Input';
 import { Button } from './components/ui/Button';
-import { Plus, Trash2, Layers } from 'lucide-react';
+import { Plus, Trash2, Layers, Folder, RotateCw } from 'lucide-react';
 import { useLongPress } from './hooks/useLongPress';
 import { TaskOptionsModal } from './components/TaskOptionsModal';
 
@@ -253,29 +257,37 @@ function TodoApp() {
                                         <button
                                             type="button"
                                             onClick={() => setShowFolderSelect(!showFolderSelect)}
-                                            className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
+                                            className={`w-8 h-8 md:w-auto md:h-8 md:px-2 flex items-center justify-center gap-1 text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
                                             title="Select Stack"
                                         >
-                                            S
+                                            <Folder size={16} strokeWidth={2.5} />
+                                            <span className="hidden md:inline font-bold uppercase tracking-wide">
+                                                {selectedFolder || 'Stack'}
+                                            </span>
                                         </button>
                                     )}
                                     <button
                                         type="button"
                                         onClick={() => setRecurring(!recurring)}
-                                        className={`w-8 h-8 md:w-6 md:h-6 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
+                                        className={`w-8 h-8 md:w-8 md:h-8 flex items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
                                         title="Recurring Task"
                                     >
-                                        ↻
+                                        <RotateCw size={18} strokeWidth={2.5} className={recurring ? 'animate-spin-slow' : ''} />
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setPriority(priority === 'urgent' ? 'normal' : priority === 'medium' ? 'urgent' : 'medium')}
-                                        className={`w-8 h-8 md:w-auto md:h-auto md:px-2 md:py-1 text-xs font-bold uppercase border-2 border-neo-dark transition-all flex items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
+                                        className={`w-8 h-8 md:w-auto md:h-8 md:px-3 text-xs font-bold uppercase border-2 border-neo-dark transition-all flex items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
                                             priority === 'medium' ? 'bg-neo-secondary text-neo-dark' :
                                                 'bg-neo-gray text-neo-dark/50'
                                             }`}
                                     >
-                                        {priority === 'normal' ? 'N' : priority === 'urgent' ? 'U' : 'M'}
+                                        <span className="md:hidden">
+                                            {priority === 'normal' ? 'N' : priority === 'urgent' ? 'U' : 'M'}
+                                        </span>
+                                        <span className="hidden md:inline tracking-wider">
+                                            {priority}
+                                        </span>
                                     </button>
                                 </div>
                             </div>
