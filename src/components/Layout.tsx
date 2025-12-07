@@ -181,12 +181,14 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                         <nav className="flex flex-col gap-1 max-h-64 overflow-y-auto">
                             {folders.map(folder => (
                                 <div key={folder} className="group flex items-center">
-                                    <NavButton
-                                        active={activeTab === folder}
-                                        onClick={() => onTabChange(folder)}
-                                        icon={<Layers size={18} />}
-                                        label={folder}
-                                    />
+                                    <div className="flex-1 min-w-0">
+                                        <NavButton
+                                            active={activeTab === folder}
+                                            onClick={() => onTabChange(folder)}
+                                            icon={<Layers size={18} />}
+                                            label={folder}
+                                        />
+                                    </div>
                                     <button
                                         onClick={(e) => { e.stopPropagation(); deleteFolder(folder); }}
                                         className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-600 transition-opacity"
