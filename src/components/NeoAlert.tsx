@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Button } from "./ui/Button";
 
 interface NeoAlertProps {

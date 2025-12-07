@@ -264,6 +264,15 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                 </p>
                             </div>
                         </div>
+
+                        {/* Desktop Empty State Message */}
+                        <div className="hidden md:flex py-12 text-center transition-opacity text-neo-dark/40 flex-col items-center justify-end mt-auto">
+                            <div className="flex items-center justify-center p-8 opacity-40 hover:opacity-100 transition-opacity">
+                                <p className="font-black text-4xl lg:text-5xl uppercase text-center leading-tight rotate-[-1deg] whitespace-pre-line">
+                                    {emptyMessage}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>
