@@ -57,8 +57,10 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
             exit={{ opacity: 0, x: -100 }}
             className={cn(
                 "group flex items-center gap-2 md:gap-3 p-3 md:p-4 border-2 md:border-3 border-neo-dark bg-neo-white shadow-neo mb-2 md:mb-3 transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none relative",
-                task.priority === 'urgent' && "border-neo-primary bg-neo-primary/10",
-                task.priority === 'medium' && "border-neo-secondary bg-neo-secondary/10"
+                task.priority === 'q1' && "border-neo-primary bg-neo-primary/10", // Do
+                task.priority === 'q2' && "border-[#3B82F6] bg-[#3B82F6]/10", // Plan (Blue)
+                task.priority === 'q3' && "border-neo-secondary bg-neo-secondary/10", // Delegate
+                task.priority === 'q4' && "border-gray-400 bg-gray-100" // Eliminate
             )}
         >
             <AnimatePresence>
@@ -106,15 +108,21 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
             <div className="flex gap-1 md:gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0 items-center">
                 <Button
                     size="sm"
-                    variant={task.priority === 'urgent' ? 'default' : 'outline'}
-                    className={cn("hidden md:flex h-6 w-6 md:h-8 md:w-auto p-0 md:px-2 text-[10px] md:text-xs uppercase items-center justify-center",
-                        task.priority === 'urgent' ? "bg-neo-primary" :
-                            task.priority === 'medium' ? "bg-neo-secondary" : ""
+                    variant="outline"
+                    className={cn("hidden md:flex h-6 w-6 md:h-8 md:w-auto p-0 md:px-2 text-[10px] md:text-xs uppercase items-center justify-center font-bold border-2 border-neo-dark",
+                        task.priority === 'q1' ? "bg-neo-primary text-neo-dark" :
+                            task.priority === 'q2' ? "bg-[#3B82F6] text-white" :
+                                task.priority === 'q3' ? "bg-neo-secondary text-neo-dark" :
+                                    "bg-gray-300 text-neo-dark"
                     )}
                     onClick={() => togglePriority(task.id)}
                 >
-                    <span className="md:hidden">{task.priority.charAt(0)}</span>
-                    <span className="hidden md:inline">{task.priority}</span>
+                    <span className="md:hidden">
+                        {task.priority === 'q1' ? 'Q1' : task.priority === 'q2' ? 'Q2' : task.priority === 'q3' ? 'Q3' : 'Q4'}
+                    </span>
+                    <span className="hidden md:inline">
+                        {task.priority === 'q1' ? 'DO' : task.priority === 'q2' ? 'PLAN' : task.priority === 'q3' ? 'DEL' : 'ELIM'}
+                    </span>
                 </Button>
 
                 <Button

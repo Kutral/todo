@@ -6,7 +6,7 @@ import { onAuthStateChanged, type User, signOut } from 'firebase/auth';
 import { collection, query, onSnapshot, doc, setDoc, deleteDoc, updateDoc, writeBatch } from 'firebase/firestore';
 
 export type TaskType = 'today' | 'tomorrow';
-export type Priority = 'normal' | 'medium' | 'urgent';
+export type Priority = 'q1' | 'q2' | 'q3' | 'q4';
 
 export interface Task {
     id: string;
@@ -89,7 +89,14 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         const q = query(tasksRef);
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const allTasks = snapshot.docs.map(d => d.data() as Task);
+            const allTasks = snapshot.docs.map(d => {
+                const data = d.data() as any;
+                // Migration: Map old priorities to Eisenhower Matrix
+                if (data.priority === 'urgent') data.priority = 'q1';
+                else if (data.priority === 'medium') data.priority = 'q2';
+                else if (data.priority === 'normal') data.priority = 'q4';
+                return data as Task;
+            });
             const active = allTasks.filter(t => !t.completed);
             const completed = allTasks.filter(t => t.completed);
 
@@ -263,7 +270,21 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
         try {
             const task = [...tasks, ...history].find(t => t.id === id);
             if (!task) return;
-            const nextP = task.priority === 'urgent' ? 'normal' : task.priority === 'medium' ? 'urgent' : 'medium';
+
+            let current = task.priority as string;
+            // Handle legacy values if somehow persisted without migration
+            if (current === 'urgent') current = 'q1';
+            else if (current === 'medium') current = 'q2';
+            else if (current === 'normal') current = 'q4';
+
+            const map: Record<string, Priority> = {
+                'q1': 'q2', // Do -> Plan
+                'q2': 'q3', // Plan -> Delegate
+                'q3': 'q4', // Delegate -> Eliminate
+                'q4': 'q1'  // Eliminate -> Do
+            };
+            const nextP = map[current] || 'q1';
+
             await updateDoc(doc(db, 'users', user.uid, 'tasks', id), { priority: nextP });
         } catch (err: any) {
             console.error("Toggle Priority Error:", err);

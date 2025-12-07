@@ -14,7 +14,7 @@ function TodoApp() {
     const [activeTab, setActiveTab] = useState('today');
     const { tasks, history, addTask, folders, addFolder, deleteFolder } = useTodo();
     const [newTask, setNewTask] = useState('');
-    const [priority, setPriority] = useState<'normal' | 'medium' | 'urgent'>('normal');
+    const [priority, setPriority] = useState<'q1' | 'q2' | 'q3' | 'q4'>('q4');
     const [recurring, setRecurring] = useState(false);
     // category state is now used for selecting stack when in Today/Tomorrow
     const [selectedFolder, setSelectedFolder] = useState<string>('');
@@ -34,7 +34,7 @@ function TodoApp() {
         }
     };
 
-    const submitTask = (customOptions?: { complexity: 'normal' | 'medium' | 'urgent'; recurring: boolean; stack: string }) => {
+    const submitTask = (customOptions?: { complexity: 'q1' | 'q2' | 'q3' | 'q4'; recurring: boolean; stack: string }) => {
         if (!newTask.trim()) return;
 
         // Use custom options if provided, otherwise current state
@@ -47,7 +47,7 @@ function TodoApp() {
 
         addTask(newTask, type, p, r, s);
         setNewTask('');
-        setPriority('normal');
+        setPriority('q4');
         setRecurring(false);
         setSelectedFolder('');
         setShowFolderSelect(false);
@@ -86,13 +86,17 @@ function TodoApp() {
         return t.type === activeTab;
     });
 
-    // Sort: Urgent > Medium > Normal, then by creation date
+    // Sort: Q1 > Q2 > Q3 > Q4, then by creation date
     filteredTasks.sort((a, b) => {
-        const priorityWeight = { urgent: 3, medium: 2, normal: 1 };
-        if (priorityWeight[a.priority] === priorityWeight[b.priority]) {
+        const priorityWeight = { q1: 4, q2: 3, q3: 2, q4: 1 };
+        // Handle potential legacy values safely by defaulting to 0 or 1
+        const weightA = priorityWeight[a.priority as keyof typeof priorityWeight] || 1;
+        const weightB = priorityWeight[b.priority as keyof typeof priorityWeight] || 1;
+
+        if (weightA === weightB) {
             return b.createdAt - a.createdAt;
         }
-        return priorityWeight[b.priority] - priorityWeight[a.priority];
+        return weightB - weightA;
     });
 
     const displayDate = activeTab === 'tomorrow' ? addDays(new Date(), 1) : new Date();
@@ -245,9 +249,10 @@ function TodoApp() {
                                     value={newTask}
                                     onChange={(e) => setNewTask(e.target.value)}
                                     placeholder={isFolderTab ? `Add to ${activeTab}...` : `Add task...`}
-                                    className={`pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3 transition-colors ${priority === 'urgent' ? 'border-neo-primary focus-visible:ring-neo-primary' :
-                                        priority === 'medium' ? 'border-neo-secondary focus-visible:ring-neo-secondary' :
-                                            ''
+                                    className={`pr-28 md:pr-24 text-base md:text-lg h-12 md:h-14 border-2 md:border-3 transition-colors ${priority === 'q1' ? 'border-neo-primary focus-visible:ring-neo-primary' :
+                                            priority === 'q2' ? 'border-[#3B82F6] focus-visible:ring-[#3B82F6]' :
+                                                priority === 'q3' ? 'border-neo-secondary focus-visible:ring-neo-secondary' :
+                                                    ''
                                         }`}
                                 />
                                 <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 flex gap-1">
@@ -282,17 +287,21 @@ function TodoApp() {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setPriority(priority === 'urgent' ? 'normal' : priority === 'medium' ? 'urgent' : 'medium')}
-                                        className={`hidden md:flex w-8 h-8 md:w-auto md:h-8 md:px-3 text-xs font-bold uppercase border-2 border-neo-dark transition-all items-center justify-center ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark' :
-                                            priority === 'medium' ? 'bg-neo-secondary text-neo-dark' :
-                                                'bg-neo-gray text-neo-dark/50'
+                                        onClick={() => {
+                                            const map: any = { q1: 'q2', q2: 'q3', q3: 'q4', q4: 'q1' };
+                                            setPriority(map[priority]);
+                                        }}
+                                        className={`hidden md:flex w-8 h-8 md:w-auto md:h-8 md:px-3 text-xs font-bold uppercase border-2 border-neo-dark transition-all items-center justify-center ${priority === 'q1' ? 'bg-neo-primary text-neo-dark' :
+                                                priority === 'q2' ? 'bg-[#3B82F6] text-white' :
+                                                    priority === 'q3' ? 'bg-neo-secondary text-neo-dark' :
+                                                        'bg-gray-300 text-neo-dark'
                                             }`}
                                     >
                                         <span className="md:hidden">
-                                            {priority === 'normal' ? 'N' : priority === 'urgent' ? 'U' : 'M'}
+                                            {priority === 'q1' ? 'Q1' : priority === 'q2' ? 'Q2' : priority === 'q3' ? 'Q3' : 'Q4'}
                                         </span>
                                         <span className="hidden md:inline tracking-wider">
-                                            {priority}
+                                            {priority === 'q1' ? 'DO' : priority === 'q2' ? 'PLAN' : priority === 'q3' ? 'DEL' : 'ELIM'}
                                         </span>
                                     </button>
                                 </div>
@@ -300,9 +309,10 @@ function TodoApp() {
                             <Button
                                 type="button"
                                 size="lg"
-                                className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors touch-none select-none ${priority === 'urgent' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
-                                    priority === 'medium' ? 'bg-neo-secondary text-neo-dark hover:bg-neo-secondary/90' :
-                                        ''
+                                className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors touch-none select-none ${priority === 'q1' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
+                                        priority === 'q2' ? 'bg-[#3B82F6] text-white hover:bg-[#3B82F6]/90' :
+                                            priority === 'q3' ? 'bg-neo-secondary text-neo-dark hover:bg-neo-secondary/90' :
+                                                ''
                                     }`}
                                 {...longPressEvent}
                             >

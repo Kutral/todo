@@ -7,8 +7,8 @@ import { useTodo } from '../context/TodoContext';
 interface TaskOptionsModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (options: { complexity: 'normal' | 'medium' | 'urgent'; recurring: boolean; stack: string }) => void;
-    initialComplexity: 'normal' | 'medium' | 'urgent';
+    onSave: (options: { complexity: 'q1' | 'q2' | 'q3' | 'q4'; recurring: boolean; stack: string }) => void;
+    initialComplexity: 'q1' | 'q2' | 'q3' | 'q4';
     initialRecurring: boolean;
     initialStack: string;
 }
@@ -50,18 +50,24 @@ export function TaskOptionsModal({ isOpen, onClose, onSave, initialComplexity, i
 
                         {/* Priority / Complexity */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold uppercase text-neo-dark/60">Priority</label>
+                            <label className="text-sm font-bold uppercase text-neo-dark/60">Eisenhower Matrix</label>
                             <div className="flex gap-2">
-                                {['normal', 'medium', 'urgent'].map((p) => (
+                                {['q1', 'q2', 'q3', 'q4'].map((p) => (
                                     <button
                                         key={p}
                                         onClick={() => setComplexity(p as any)}
-                                        className={`flex-1 py-2 font-bold uppercase border-2 border-neo-dark transition-all rounded-sm ${complexity === p
-                                            ? (p === 'urgent' ? 'bg-neo-primary' : p === 'medium' ? 'bg-neo-secondary' : 'bg-neo-white')
+                                        className={`flex-1 py-3 font-bold uppercase border-2 border-neo-dark transition-all rounded-sm flex flex-col items-center leading-none gap-1 ${complexity === p
+                                            ? (p === 'q1' ? 'bg-neo-primary text-neo-dark' :
+                                                p === 'q2' ? 'bg-[#3B82F6] text-white' :
+                                                    p === 'q3' ? 'bg-neo-secondary text-neo-dark' :
+                                                        'bg-gray-300 text-neo-dark')
                                             : 'bg-transparent text-neo-dark/50 hover:bg-neo-dark/5'
                                             }`}
                                     >
-                                        {p}
+                                        <span className="text-lg">{p.toUpperCase()}</span>
+                                        <span className="text-[10px] tracking-wider">
+                                            {p === 'q1' ? 'Do' : p === 'q2' ? 'Plan' : p === 'q3' ? 'Delegate' : 'Eliminate'}
+                                        </span>
                                     </button>
                                 ))}
                             </div>
