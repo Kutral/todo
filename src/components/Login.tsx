@@ -41,7 +41,7 @@ export function Login() {
                 animate={{ opacity: 1, y: 0 }}
                 className="max-w-md w-full bg-neo-white border-4 border-neo-dark shadow-neo p-8 flex flex-col gap-6 text-center"
             >
-                <h1 className="text-4xl font-black uppercase">NeoTodo</h1>
+                <img src="/todo/logo.png" alt="NeoTodo" className="w-full max-w-[200px] mx-auto h-auto object-contain mb-2" />
                 <p className="text-neo-dark/70 font-bold">Focus on what matters. <br /> Get things done.</p>
 
                 {error && (

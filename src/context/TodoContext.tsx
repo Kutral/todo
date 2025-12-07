@@ -140,18 +140,23 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
 
     const addTask = async (text: string, type: TaskType, priority: Priority, recurring: boolean, category?: string) => {
         if (!user) return;
-        const newTask: Task = {
-            id: uuidv4(),
-            text,
-            completed: false,
-            priority,
-            recurring,
-            type,
-            category: category || undefined,
-            date: new Date().toISOString(),
-            createdAt: Date.now(),
-        };
-        await setDoc(doc(db, 'users', user.uid, 'tasks', newTask.id), newTask);
+        try {
+            const newTask: Task = {
+                id: uuidv4(),
+                text,
+                completed: false,
+                priority,
+                recurring,
+                type,
+                category: category || undefined,
+                date: new Date().toISOString(),
+                createdAt: Date.now(),
+            };
+            await setDoc(doc(db, 'users', user.uid, 'tasks', newTask.id), newTask);
+        } catch (err: any) {
+            console.error('Add Task Error:', err);
+            setError("Failed to add task: " + err.message);
+        }
     };
 
     const toggleTask = async (id: string) => {
