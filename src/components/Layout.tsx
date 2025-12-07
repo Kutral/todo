@@ -1,6 +1,5 @@
 // v2.0 - Firebase Auth
 import { type ReactNode, useState } from "react";
-import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
 import { LayoutDashboard, Calendar, History, Sprout, Layers, Plus, X, LogOut } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -36,9 +35,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
         user,
         logout,
         loading,
-        error,
-        showQuotes,
-        toggleQuotes
+        error
     } = useTodo();
 
     const [isAddingFolder, setIsAddingFolder] = useState(false);
@@ -100,7 +97,6 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
 
     return (
         <div className="h-screen bg-neo-bg flex flex-col font-sans selection:bg-neo-primary selection:text-neo-dark">
-            <QuoteWidget />
 
             {/* Mobile Welcome Bar */}
             <div className="md:hidden flex items-center justify-between px-4 py-2 bg-neo-white border-b-2 border-neo-dark">
@@ -222,15 +218,6 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                             </button>
                         </div>
 
-                        {!showQuotes && (
-                            <button
-                                onClick={() => toggleQuotes(true)}
-                                className="w-full text-[10px] font-bold uppercase text-neo-dark/60 hover:text-neo-primary mb-2 hover:underline"
-                            >
-                                Show Ticker
-                            </button>
-                        )}
-
                         <div className="text-[10px] uppercase font-bold text-neo-dark/40 tracking-widest text-center">
                             Developed by Kutral Eswar
                         </div>
@@ -250,15 +237,8 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                 </p>
                             </div>
                             <div className="opacity-70 hover:opacity-100 mb-8 flex flex-col items-center">
-                                {!showQuotes && (
-                                    <button
-                                        onClick={() => toggleQuotes(true)}
-                                        className="text-[10px] font-bold uppercase text-neo-dark/60 hover:text-neo-primary mb-4 hover:underline"
-                                    >
-                                        Show Ticker
-                                    </button>
-                                )}
                             </div>
+
                         </div>
 
                         {/* Desktop Empty State Message */}

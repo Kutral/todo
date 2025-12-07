@@ -239,119 +239,40 @@ function TodoApp() {
                                     {progressVisual}
                                 </div>
                             </div>
+                            <h3 className="text-xs font-black text-neo-dark/30 uppercase tracking-widest pl-1">Inbox</h3>
+                            <TaskList tasks={filteredTasks.filter(t => !t.category || !folders.includes(t.category))} />
                         </div>
-                    </header>
-
-                    <form onSubmit={handleAddTask} className="flex flex-col gap-2 mb-4 md:mb-8">
-                        <div className="flex gap-2">
-                                            type="button"
-                                            onClick={() => setShowFolderSelect(!showFolderSelect)}
-                                            className={`hidden md:flex w-8 h-8 md:w-auto md:h-8 md:px-2 items-center justify-center gap-1 text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${selectedFolder ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/50'}`}
-                                            title="Select Stack"
-                                        >
-                                            <Folder size={16} strokeWidth={2.5} />
-                                            <span className="hidden md:inline font-bold uppercase tracking-wide">
-                                                {selectedFolder || 'Stack'}
-                                            </span>
-                                        </button>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => setRecurring(!recurring)}
-                                        className={`hidden md:flex w-8 h-8 md:w-8 md:h-8 items-center justify-center text-sm md:text-xs font-bold border-2 border-neo-dark transition-all ${recurring ? 'bg-neo-secondary text-neo-dark' : 'bg-neo-gray text-neo-dark/50'}`}
-                                        title="Recurring Task"
-                                    >
-                                        <RotateCw size={18} strokeWidth={2.5} className={recurring ? 'animate-spin-slow' : ''} />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            const map: any = { q1: 'q2', q2: 'q3', q3: 'q4', q4: 'q1' };
-                                            setPriority(map[priority]);
-                                        }}
-                                        className={`hidden md:flex w-8 h-8 md:w-auto md:h-8 md:px-3 text-xs font-bold uppercase border-2 border-neo-dark transition-all items-center justify-center ${priority === 'q1' ? 'bg-neo-primary text-neo-dark' :
-                                                priority === 'q2' ? 'bg-[#3B82F6] text-white' :
-                                                    priority === 'q3' ? 'bg-neo-secondary text-neo-dark' :
-                                                        'bg-gray-300 text-neo-dark'
-                                            }`}
-                                    >
-                                        <span className="md:hidden">
-                                            {priority === 'q1' ? 'Q1' : priority === 'q2' ? 'Q2' : priority === 'q3' ? 'Q3' : 'Q4'}
-                                        </span>
-                                        <span className="hidden md:inline tracking-wider">
-                                            {priority === 'q1' ? 'DO' : priority === 'q2' ? 'PLAN' : priority === 'q3' ? 'DEL' : 'ELIM'}
-                                        </span>
-                                    </button>
-                                </div>
-                            </div>
-                            <Button
-                                type="button"
-                                size="lg"
-                                className={`h-12 md:h-14 px-4 md:px-8 text-lg border-2 md:border-3 transition-colors touch-none select-none ${priority === 'q1' ? 'bg-neo-primary text-neo-dark hover:bg-neo-primary/90' :
-                                        priority === 'q2' ? 'bg-[#3B82F6] text-white hover:bg-[#3B82F6]/90' :
-                                            priority === 'q3' ? 'bg-neo-secondary text-neo-dark hover:bg-neo-secondary/90' :
-                                                ''
-                                    }`}
-                                {...longPressEvent}
-                            >
-                                <Plus size={24} strokeWidth={3} className="md:w-6 md:h-6" />
-                            </Button>
-                        </div >
-        { showFolderSelect && !isFolderTab && (
-            <div className="flex gap-2 flex-wrap">
-                {folders.map(f => (
-                    <button
-                        key={f}
-                        type="button"
-                        onClick={() => setSelectedFolder(selectedFolder === f ? '' : f)}
-                        className={`px-3 py-1 text-xs font-bold border-2 border-neo-dark uppercase rounded-sm transition-all ${selectedFolder === f ? 'bg-neo-primary text-neo-dark' : 'bg-neo-white text-neo-dark/70 hover:bg-neo-secondary'}`}
-                    >
-                        {f}
-                    </button>
-                ))}
-            </div>
-        )
-}
-                    </form >
-
-    {!isFolderTab && filteredTasks.some(t => t.category && folders.includes(t.category)) ? (
-        <div className="space-y-8">
-            {/* Uncategorized First */}
-            {filteredTasks.some(t => !t.category || !folders.includes(t.category)) && (
-                <div className="space-y-2">
-                    <h3 className="text-xs font-black text-neo-dark/30 uppercase tracking-widest pl-1">Inbox</h3>
-                    <TaskList tasks={filteredTasks.filter(t => !t.category || !folders.includes(t.category))} />
-                </div>
             )}
-            {/* Stack Groups */}
-            {folders.map(folder => {
-                const stackTasks = filteredTasks.filter(t => t.category === folder);
-                if (stackTasks.length === 0) return null;
-                return (
-                    <div key={folder} className="space-y-2">
-                        <h3 className="text-xs font-black text-neo-dark uppercase tracking-widest pl-1 flex items-center gap-2">
-                            <Folder size={14} className="text-neo-primary" /> {folder}
-                        </h3>
-                        <TaskList tasks={stackTasks} />
-                    </div>
-                );
-            })}
-        </div>
-    ) : (
-        <TaskList tasks={filteredTasks} />
+                        {/* Stack Groups */}
+                        {folders.map(folder => {
+                            const stackTasks = filteredTasks.filter(t => t.category === folder);
+                            if (stackTasks.length === 0) return null;
+                            return (
+                                <div key={folder} className="space-y-2">
+                                    <h3 className="text-xs font-black text-neo-dark uppercase tracking-widest pl-1 flex items-center gap-2">
+                                        <Folder size={14} className="text-neo-primary" /> {folder}
+                                    </h3>
+                                    <TaskList tasks={stackTasks} />
+                                </div>
+                            );
+                        })}
+                </div>
+            ) : (
+            <TaskList tasks={filteredTasks} />
     )}
 
-{/* Completed Tasks Section */ }
-{
-    history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))).length > 0 && (
-        <div className="mt-8 pt-8 border-t-3 border-neo-dark/20">
-            <h3 className="text-xl font-bold uppercase mb-4 text-neo-dark/50">Completed</h3>
-            <TaskList tasks={history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date())))} />
-        </div>
+            {/* Completed Tasks Section */}
+            {
+                history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))).length > 0 && (
+                    <div className="mt-8 pt-8 border-t-3 border-neo-dark/20">
+                        <h3 className="text-xl font-bold uppercase mb-4 text-neo-dark/50">Completed</h3>
+                        <TaskList tasks={history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date())))} />
+                    </div>
+                )
+            }
+        </div >
     )
 }
-                </div >
-            )}
 
 <TaskOptionsModal
     isOpen={showOptionsModal}
