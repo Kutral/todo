@@ -7,13 +7,14 @@ export function useLongPress(
 ) {
     const [longPressTriggered, setLongPressTriggered] = useState(false);
     const timeout = useRef<NodeJS.Timeout>();
-    const target = useRef<EventTarget>();
+    const target = useRef<HTMLElement>();
 
     const start = useCallback(
         (event: React.MouseEvent | React.TouchEvent) => {
             if (shouldPreventDefault && event.target) {
-                event.target.addEventListener('touchend', preventDefault, { passive: false });
-                target.current = event.target;
+                const t = event.target as HTMLElement;
+                t.addEventListener('touchend', preventDefault, { passive: false });
+                target.current = t;
             }
             timeout.current = setTimeout(() => {
                 onLongPress(event);
@@ -49,8 +50,9 @@ export function useLongPress(
 }
 
 const preventDefault = (e: Event) => {
-    if (!('touches' in e)) return;
-    if ((e as TouchEvent).touches.length < 2 && (e as TouchEvent).preventDefault) {
-        e.preventDefault();
+    const touchEvent = e as unknown as TouchEvent;
+    if (!('touches' in touchEvent)) return;
+    if (touchEvent.touches.length < 2 && touchEvent.preventDefault) {
+        touchEvent.preventDefault();
     }
 };
