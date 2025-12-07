@@ -98,7 +98,7 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                 <Button
                     size="sm"
                     variant={task.priority === 'urgent' ? 'default' : 'outline'}
-                    className={cn("h-6 w-6 md:h-8 md:w-auto p-0 md:px-2 text-[10px] md:text-xs uppercase flex items-center justify-center",
+                    className={cn("hidden md:flex h-6 w-6 md:h-8 md:w-auto p-0 md:px-2 text-[10px] md:text-xs uppercase items-center justify-center",
                         task.priority === 'urgent' ? "bg-neo-primary" :
                             task.priority === 'medium' ? "bg-neo-secondary" : ""
                     )}
@@ -111,7 +111,7 @@ export function TaskItem({ task, showDate }: TaskItemProps) {
                 <Button
                     size="icon"
                     variant="ghost"
-                    className={cn("h-6 w-6 md:h-8 md:w-8", task.recurring && "text-neo-secondary")}
+                    className={cn("hidden md:flex h-6 w-6 md:h-8 md:w-8", task.recurring && "text-neo-secondary")}
                     onClick={() => toggleRecurring(task.id)}
                     title="Toggle Recurring"
                 >
