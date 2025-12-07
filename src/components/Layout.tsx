@@ -75,21 +75,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
         }
     };
 
-    const handlers = useSwipeable({
-        onSwipedLeft: () => {
-            const currentIndex = TABS.indexOf(activeTab);
-            if (currentIndex < TABS.length - 1) {
-                onTabChange(TABS[currentIndex + 1]);
-            }
-        },
-        onSwipedRight: () => {
-            const currentIndex = TABS.indexOf(activeTab);
-            if (currentIndex > 0) {
-                onTabChange(TABS[currentIndex - 1]);
-            }
-        },
-        trackMouse: false
-    });
+
 
     return (
         <div className="h-screen bg-neo-bg flex flex-col font-sans selection:bg-neo-primary selection:text-neo-dark">
