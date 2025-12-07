@@ -1,11 +1,12 @@
 import { type ReactNode, useState } from "react";
 import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
-import { LayoutDashboard, Calendar, History, Sprout, Layers, Plus, X } from "lucide-react";
+import { LayoutDashboard, Calendar, History, Sprout, Layers, Plus, X, LogOut, User as UserIcon } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useSwipeable } from "react-swipeable";
 import { useTodo } from "../context/TodoContext";
 import { Input } from "./ui/Input";
+import { Login } from "./Login";
 
 interface LayoutProps {
     children: ReactNode;
@@ -14,10 +15,23 @@ interface LayoutProps {
 }
 
 export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
-    const { folders, addFolder, deleteFolder } = useTodo();
+    const { folders, addFolder, deleteFolder, user, logout, loading } = useTodo();
     const [isAddingFolder, setIsAddingFolder] = useState(false);
     const [newFolderName, setNewFolderName] = useState("");
     const TABS: string[] = ['today', 'tomorrow', 'garden', 'history', ...folders];
+
+    // Handle Auth State
+    if (loading) {
+        return (
+            <div className="h-screen bg-neo-bg flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-neo-dark border-r-transparent"></div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return <Login />;
+    }
 
     const handleAddFolder = (e: React.FormEvent) => {
         e.preventDefault();
@@ -129,19 +143,31 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                         </nav>
                     </div>
 
-                    <div className="mt-auto pt-6 border-t-3 border-neo-dark">
-                        <div className="flex flex-col gap-1">
-                            <p className="font-bold text-xs text-neo-dark/60 uppercase tracking-widest">
-                                Est. {new Date().getFullYear()}
-                            </p>
-                            <p className="font-black text-sm text-neo-dark uppercase tracking-tight">
-                                Developed by Kutral Eswar
-                            </p>
+                    <div className="mt-auto pt-6 border-t-3 border-neo-dark space-y-4">
+                        <div className="flex items-center gap-3">
+                            {user.photoURL ? (
+                                <img src={user.photoURL} className="w-10 h-10 rounded-full border-2 border-neo-dark" alt="User" />
+                            ) : (
+                                <div className="w-10 h-10 rounded-full border-2 border-neo-dark bg-neo-secondary flex items-center justify-center font-bold text-neo-dark">
+                                    {user.isAnonymous ? '?' : (user.displayName?.[0] || 'U')}
+                                </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                                <p className="font-bold text-sm truncate">{user.displayName || (user.isAnonymous ? 'Guest' : 'User')}</p>
+                                <p className="text-xs text-neo-dark/50 truncate">NeoTodo</p>
+                            </div>
+                            <button onClick={logout} className="p-2 hover:bg-neo-secondary rounded transition-colors" title="Logout">
+                                <LogOut size={16} />
+                            </button>
+                        </div>
+                        <div className="text-[10px] uppercase font-bold text-neo-dark/40 tracking-widest text-center">
+                            Developed by Kutral Eswar
                         </div>
                     </div>
 
 
                 </aside>
+
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-auto p-4 md:p-8 relative pb-24 md:pb-8 overflow-x-hidden" {...handlers}>
