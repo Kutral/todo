@@ -82,6 +82,25 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
         <div className="h-screen bg-neo-bg flex flex-col font-sans selection:bg-neo-primary selection:text-neo-dark">
             <QuoteWidget />
 
+            {/* Mobile Welcome Bar */}
+            <div className="md:hidden flex items-center justify-between px-4 py-2 bg-neo-white border-b-2 border-neo-dark">
+                <div className="flex items-center gap-2">
+                    {user.photoURL ? (
+                        <img src={user.photoURL} className="w-6 h-6 rounded-full border border-neo-dark" alt="" />
+                    ) : (
+                        <div className="w-6 h-6 rounded-full border border-neo-dark bg-neo-secondary flex items-center justify-center text-xs font-bold">
+                            {user.isAnonymous ? '?' : (user.displayName?.[0] || 'U')}
+                        </div>
+                    )}
+                    <span className="font-bold text-sm">
+                        Hi, {user.displayName?.split(' ')[0] || (user.isAnonymous ? 'Guest' : 'User')}!
+                    </span>
+                </div>
+                <button onClick={logout} className="text-xs font-bold uppercase text-neo-dark/60 hover:text-neo-dark">
+                    Logout
+                </button>
+            </div>
+
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
                 <aside className="w-64 border-r-3 border-neo-dark bg-neo-white hidden md:flex flex-col p-4 gap-4">
