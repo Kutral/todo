@@ -28,10 +28,27 @@ export function DigitalGarden() {
         return format(parseISO(dateStr), 'yyyy-MM-dd');
     }));
 
+    // Milestones for tree stages
+    const MILESTONES = [3, 7, 14, 30, 90, 365];
+    const getNextMilestone = (streak: number) => MILESTONES.find(m => m > streak) || MILESTONES[MILESTONES.length - 1];
+    const nextMilestone = getNextMilestone(stats.streak);
+
+    // Calculate progress to next milestone
+    // Limit progress to 100% if maxed out
+    const prevMilestone = MILESTONES[[...MILESTONES].reverse().find(m => m <= stats.streak) ? MILESTONES.indexOf([...MILESTONES].reverse().find(m => m <= stats.streak)!) : -1] || 0;
+    const progressTotal = nextMilestone - prevMilestone;
+    const progressCurrent = stats.streak - prevMilestone;
+    const progressPercent = Math.min(100, Math.max(0, (progressCurrent / progressTotal) * 100));
+
+    // Visual bar
+    const filledBars = Math.round((progressPercent / 100) * 10); // 10 blocks
+    const emptyBars = 10 - filledBars;
+    const barVisual = '█'.repeat(filledBars) + '░'.repeat(emptyBars);
+
     return (
         <div className="space-y-6">
             {/* Hero Section */}
-            <div className="border-2 border-neo-dark rounded-lg shadow-sm overflow-hidden flex flex-col">
+            <div className="border-2 border-neo-dark rounded-lg shadow-sm overflow-hidden flex flex-col transition-all hover:shadow-md">
                 {/* Top: Title Bar */}
                 <div className="bg-[#FFF9C4] p-4 text-center border-b-2 border-neo-dark">
                     <h2 className="text-2xl font-black uppercase tracking-tight">Your Digital Garden</h2>
@@ -45,21 +62,35 @@ export function DigitalGarden() {
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", bounce: 0.5 }}
-                        className="text-8xl md:text-9xl mb-6 drop-shadow-sm filter"
+                        className="text-8xl md:text-9xl mb-6 drop-shadow-sm filter flex flex-col items-center"
                     >
                         {getTreeStage(stats.streak)}
                     </motion.div>
 
-                    <div className="text-center space-y-1">
-                        <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
-                            Current Streak: <span className="text-green-600">{stats.streak} Days</span>
-                        </h3>
-                        <div className="flex items-center justify-center gap-2">
-                            <span className="h-1 w-1 rounded-full bg-neo-dark/30"></span>
-                            <p className="text-sm font-bold text-neo-dark/50 uppercase tracking-wider">
+                    <div className="text-center space-y-4 w-full max-w-xs mx-auto">
+                        <div>
+                            <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight leading-none">
+                                Current Streak: <span className="text-green-600">{stats.streak} Days</span>
+                            </h3>
+                            <p className="text-sm font-bold text-neo-dark/40 uppercase tracking-wider mt-1">
                                 Total Tasks Completed: {stats.totalCompleted}
                             </p>
-                            <span className="h-1 w-1 rounded-full bg-neo-dark/30"></span>
+                        </div>
+
+                        {/* Gamification / Progress */}
+                        <div className="bg-neo-white/50 p-3 rounded-lg border-2 border-neo-dark/5">
+                            <div className="flex justify-between items-end mb-1">
+                                <span className="text-xs font-bold uppercase text-neo-dark/60">Level Progress</span>
+                                <span className="text-xs font-bold text-green-600 uppercase">
+                                    Next bloom in {nextMilestone - stats.streak} days 🌱
+                                </span>
+                            </div>
+                            <div className="text-neo-primary text-xs tracking-[0.2em] font-black overflow-hidden whitespace-nowrap text-center">
+                                {barVisual}
+                            </div>
+                            <p className="text-[10px] font-bold text-neo-dark/30 uppercase mt-1 text-center">
+                                {stats.streak} / {nextMilestone} Days to next stage
+                            </p>
                         </div>
                     </div>
                 </div>
