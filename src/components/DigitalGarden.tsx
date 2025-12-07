@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { motion } from "framer-motion";
 import { useTodo } from "../context/TodoContext";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
@@ -44,6 +45,22 @@ export function DigitalGarden() {
     const filledBars = Math.round((progressPercent / 100) * 10); // 10 blocks
     const emptyBars = 10 - filledBars;
     const barVisual = '█'.repeat(filledBars) + '░'.repeat(emptyBars);
+
+    // Random Garden Quotes
+    const GARDEN_QUOTES = [
+        "Consistency waters your garden. Keep the streak alive!",
+        "Small seeds grow into big trees. Just keep showing up.",
+        "Your future is created by what you do today, not tomorrow.",
+        "Don't judge each day by the harvest you reap but by the seeds that you plant.",
+        "Growth is a spiral process, doubling back on itself, reassessing and regrouping.",
+        "The best time to plant a tree was 20 years ago. The second best time is now.",
+        "Nature does not hurry, yet everything is accomplished.",
+        "Focus on the root, and the fruit will take care of itself."
+    ];
+
+    const randomQuote = useMemo(() => {
+        return GARDEN_QUOTES[Math.floor(Math.random() * GARDEN_QUOTES.length)];
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -98,7 +115,7 @@ export function DigitalGarden() {
                 {/* Bottom: Quote */}
                 <div className="bg-white p-4 text-center">
                     <div className="inline-block px-4 py-2 bg-neo-bg/50 rounded-full border border-neo-dark/10 text-sm font-bold italic text-neo-dark/70">
-                        "Consistency waters your garden. Keep the streak alive!"
+                        "{randomQuote}"
                     </div>
                 </div>
             </div>
