@@ -130,11 +130,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     }, [user]);
 
     // Actions
-    const updateStats = async (incrementStreak: boolean, newLastActive: string | null) => {
-        if (!user) return;
-        const metaRef = doc(db, 'users', user.uid, 'data', 'metadata');
-        // Logic handled in toggleTask mostly, but we need to write to DB
-    };
+
 
     const addFolder = async (name: string) => {
         if (!user || folders.includes(name)) return;

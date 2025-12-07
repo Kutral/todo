@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from "react";
 import { QuoteWidget } from "./QuoteWidget";
 import { Button } from "./ui/Button";
-import { LayoutDashboard, Calendar, History, Sprout, Layers, Plus, X, LogOut, User as UserIcon } from "lucide-react";
+import { LayoutDashboard, Calendar, History, Sprout, Layers, Plus, X, LogOut } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useSwipeable } from "react-swipeable";
 import { useTodo } from "../context/TodoContext";
