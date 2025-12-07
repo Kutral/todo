@@ -6,7 +6,7 @@ import { DigitalGarden } from './components/DigitalGarden';
 import { useTodo, type Task } from './context/TodoContext';
 import { Input } from './components/ui/Input';
 import { Button } from './components/ui/Button';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Layers } from 'lucide-react';
 
 function TodoApp() {
     const [activeTab, setActiveTab] = useState('today');
@@ -130,69 +130,6 @@ function TodoApp() {
             ) : activeTab === 'folders-manage' ? (
                 <div className="space-y-4">
                     <div>
-                        <h2 className="text-4xl font-black uppercase tracking-tight">Stacks</h2>
-                        <p className="text-sm font-bold text-neo-dark/50 mt-1">
-                            Bundles of tasks (like routines). <br className="md:hidden" /> Example: Health, Money, Deep Work.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 md:gap-4">
-                        {folders.map(folder => {
-                            const count = tasks.filter(t => t.category === folder).length;
-                            return (
-                                <div key={folder} className="relative group">
-                                    <button
-                                        onClick={() => setActiveTab(folder)}
-                                        className="w-full aspect-square bg-neo-white border-2 border-neo-dark p-4 flex flex-col items-start justify-between hover:translate-x-1 hover:translate-y-1 transition-transform shadow-neo text-left relative overflow-hidden"
-                                    >
-                                        <div className="w-full flex justify-between items-start">
-                                            <span className="text-2xl filter grayscale group-hover:grayscale-0 transition-all">
-                                                {['📦', '📚', '💪', '🧠', '💰', '🌱'][folder.length % 6]}
-                                            </span>
-                                            {count > 0 && (
-                                                <span className="h-2 w-2 rounded-full bg-neo-primary animate-pulse"></span>
-                                            )}
-                                        </div>
-
-                                        <div className="w-full">
-                                            <span className="font-black uppercase text-lg break-all line-clamp-2 leading-tight block mb-1">{folder}</span>
-                                            <span className="text-[10px] font-black text-neo-dark/40 uppercase tracking-widest block">
-                                                {count} Tasks
-                                            </span>
-                                        </div>
-                                    </button>
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); deleteFolder(folder); }}
-                                        className="absolute top-1 right-1 p-2 text-neo-dark/20 hover:text-red-600 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
-                                        title="Delete Stack"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <div className="mt-8 p-4 md:p-6 border-2 border-dashed border-neo-dark/30 rounded-lg bg-neo-bg/50">
-                        <h3 className="font-bold uppercase mb-2 text-sm text-neo-dark/60 tracking-widest">Create New Stack</h3>
-                        <form onSubmit={handleCreateFolder} className="flex gap-2">
-                            <Input
-                                value={newTask}
-                                onChange={(e) => setNewTask(e.target.value)}
-                                placeholder="e.g. Health, Deep Work..."
-                                className="h-10 text-base border-2 bg-transparent focus:bg-white transition-colors"
-                            />
-                            <Button type="submit" size="default" className="h-10 border-2 px-4 bg-neo-dark text-neo-white hover:bg-neo-primary hover:text-neo-dark">
-                                <Plus size={20} />
-                            </Button>
-                        </form>
-                    </div>
-                </div>
-            ) : (
-                <div className="space-y-4 md:space-y-6">
-                    <header className="flex justify-between items-end mb-4 md:mb-8">
-                        <div>
-                            <div className="flex items-center gap-3">
                                 <h2 className="text-2xl md:text-4xl font-black uppercase">{activeTab}</h2>
                                 {isFolderTab && (
                                     <span className="bg-neo-dark text-neo-white text-xs px-2 py-1 font-bold uppercase tracking-wider rounded-sm">STACK</span>
@@ -287,16 +224,19 @@ function TodoApp() {
 
                     <TaskList tasks={filteredTasks} />
 
-                    {/* Completed Tasks Section */}
-                    {history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))).length > 0 && (
-                        <div className="mt-8 pt-8 border-t-3 border-neo-dark/20">
-                            <h3 className="text-xl font-bold uppercase mb-4 text-neo-dark/50">Completed</h3>
-                            <TaskList tasks={history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date())))} />
-                        </div>
-                    )}
-                </div>
-            )}
-        </Layout>
+                    {/* Completed Tasks Section */ }
+    {
+        history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))).length > 0 && (
+            <div className="mt-8 pt-8 border-t-3 border-neo-dark/20">
+                <h3 className="text-xl font-bold uppercase mb-4 text-neo-dark/50">Completed</h3>
+                <TaskList tasks={history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date())))} />
+            </div>
+        )
+    }
+                </div >
+            )
+}
+        </Layout >
     );
 }
 
