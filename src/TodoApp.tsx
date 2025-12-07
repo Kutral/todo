@@ -325,7 +325,32 @@ function TodoApp() {
                         )}
                     </form>
 
-                    <TaskList tasks={filteredTasks} />
+                    {!isFolderTab && filteredTasks.some(t => t.category && folders.includes(t.category)) ? (
+                        <div className="space-y-8">
+                            {/* Uncategorized First */}
+                            {filteredTasks.some(t => !t.category || !folders.includes(t.category)) && (
+                                <div className="space-y-2">
+                                    <h3 className="text-xs font-black text-neo-dark/30 uppercase tracking-widest pl-1">Inbox</h3>
+                                    <TaskList tasks={filteredTasks.filter(t => !t.category || !folders.includes(t.category))} />
+                                </div>
+                            )}
+                            {/* Stack Groups */}
+                            {folders.map(folder => {
+                                const stackTasks = filteredTasks.filter(t => t.category === folder);
+                                if (stackTasks.length === 0) return null;
+                                return (
+                                    <div key={folder} className="space-y-2">
+                                        <h3 className="text-xs font-black text-neo-dark uppercase tracking-widest pl-1 flex items-center gap-2">
+                                            <Folder size={14} className="text-neo-primary" /> {folder}
+                                        </h3>
+                                        <TaskList tasks={stackTasks} />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <TaskList tasks={filteredTasks} />
+                    )}
 
                     {/* Completed Tasks Section */}
                     {history.filter(t => t.type === activeTab && (t.completedAt && isSameDay(parseISO(t.completedAt), new Date()))).length > 0 && (
